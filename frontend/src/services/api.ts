@@ -69,6 +69,35 @@ export interface Document {
   ocr_completed_at?: string
 }
 
+
+export interface DocumentInfo {
+  id: string
+  documentId: string
+  document_name: string
+  document_number: string
+  party_a?: string
+  party_b?: string
+  contract_amount?: number
+  currency?: string
+  is_signed?: boolean
+  signing_date?: string
+  contract_status?: string
+  contact_person?: string
+  contact_phone?: string
+  service_type?: string
+  service_location?: string
+  start_date?: string
+  end_date?: string
+  street?: string
+  address?: string
+  cleaning_time?: string
+  cleaning_volume?: number
+  unit_price?: number
+  settlement_method?: string
+  createdAt?: string
+  updatedAt?: string
+}
+
 export interface SearchRequest {
   query: string
   tags?: string  // Comma-separated label names (e.g., "important,work")
@@ -330,6 +359,14 @@ export const documentService = {
       console.error('Download failed:', error);
       throw error;
     }
+  },
+
+  getInfo: (id: string) => {
+    return api.get<DocumentInfo>(`/documents/${id}/info`)
+  },
+
+  updateInfo: (id: string, data: Record<string, unknown>) => {
+    return api.put<DocumentInfo>(`/documents/${id}/info`, data)
   },
 
   getOcrText: (id: string) => {

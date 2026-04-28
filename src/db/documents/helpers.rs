@@ -5,12 +5,12 @@ use crate::models::{Document, UserRole};
 
 /// Standard document fields for SELECT queries
 pub const DOCUMENT_FIELDS: &str = r#"
-    id, filename, original_filename, file_path, file_size, mime_type, 
-    content, ocr_text, ocr_confidence, ocr_word_count, ocr_processing_time_ms, 
-    ocr_status, ocr_error, ocr_completed_at, ocr_retry_count, ocr_failure_reason, 
-    tags, created_at, updated_at, user_id, file_hash, original_created_at, 
-    original_modified_at, source_path, source_type, source_id, file_permissions, 
-    file_owner, file_group, source_metadata
+    documents.id, documents.filename, documents.original_filename, documents.file_path, documents.file_size, documents.mime_type,
+    documents.content, documents.ocr_text, documents.ocr_confidence, documents.ocr_word_count, documents.ocr_processing_time_ms,
+    documents.ocr_status, documents.ocr_error, documents.ocr_completed_at, documents.ocr_retry_count, documents.ocr_failure_reason,
+    documents.tags, documents.created_at, documents.updated_at, documents.user_id, documents.file_hash, documents.original_created_at,
+    documents.original_modified_at, documents.source_path, documents.source_type, documents.source_id, documents.file_permissions,
+    documents.file_owner, documents.file_group, documents.source_metadata
 "#;
 
 /// Maps a database row to a Document struct
@@ -62,7 +62,7 @@ pub fn apply_role_based_filter(
             // Admins can see all documents - no additional filter needed
         }
         UserRole::User => {
-            query.push(" AND user_id = ");
+            query.push(" AND documents.user_id = ");
             query.push_bind(user_id);
         }
     }

@@ -1,11 +1,11 @@
 {
   "common": {
-    "appName": "Readur",
+    "appName": "DMS",
     "appTagline": "KI-Dokumentenplattform",
     "welcome": "Willkommen bei {{appName}}",
     "welcomeBack": "Willkommen zurück, {{username}}! 👋",
     "or": "oder",
-    "copyright": "© 2026 Readur. Unterstützt durch fortschrittliche OCR- und KI-Technologie.",
+    "copyright": "© 2026 DMS. Unterstützt durch fortschrittliche OCR- und KI-Technologie.",
     "actions": {
       "save": "Speichern",
       "cancel": "Abbrechen",
@@ -300,6 +300,10 @@
     "languageSettings": {
       "title": "🌐 OCR-Spracheinstellungen",
       "description": "Wählen Sie Sprachen für optimale OCR-Texterkennung"
+    },
+    "documentInfo": {
+      "title": "📋 Document Information",
+      "description": "Provide details about the document"
     },
     "labelAssignment": {
       "title": "📋 Label-Zuweisung",

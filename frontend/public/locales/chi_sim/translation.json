@@ -1,0 +1,914 @@
+{
+  "common": {
+    "appName": "DMS",
+    "appTagline": "AI 文档平台",
+    "welcome": "欢迎使用 {{appName}}",
+    "welcomeBack": "欢迎回来，{{username}}！👋",
+    "or": "或",
+    "copyright": "© 2026 DMS。由先进的 OCR 和 AI 技术提供支持。",
+    "actions": {
+      "save": "保存",
+      "cancel": "取消",
+      "close": "关闭",
+      "delete": "删除",
+      "edit": "编辑",
+      "view": "查看",
+      "download": "下载",
+      "upload": "上传",
+      "search": "搜索",
+      "filter": "筛选",
+      "sort": "排序",
+      "clear": "清空",
+      "refresh": "刷新",
+      "retry": "重试",
+      "create": "创建",
+      "update": "更新",
+      "viewDetails": "查看详情",
+      "back": "返回"
+    },
+    "status": {
+      "loading": "加载中...",
+      "processing": "处理中...",
+      "completed": "已完成",
+      "failed": "失败",
+      "pending": "待处理",
+      "success": "成功",
+      "error": "错误"
+    },
+    "time": {
+      "seconds": "{{count}} 秒",
+      "minutes": "{{count}} 分钟",
+      "hours": "{{count}} 小时",
+      "days": "{{count}} 天"
+    },
+    "sizes": {
+      "bytes": "{{count}} 字节",
+      "kb": "{{count}} 千字节",
+      "mb": "{{count}} 兆字节",
+      "gb": "{{count}} 吉字节"
+    },
+    "moreCount": "另有 {{count}} 项",
+    "of": "的",
+    "and": "和"
+  },
+  "auth": {
+    "signIn": "登录",
+    "signingIn": "登录中...",
+    "signInToAccount": "登录你的账户",
+    "signInWithOIDC": "通过 OIDC 登录",
+    "redirecting": "重定向中...",
+    "username": "用户名",
+    "password": "密码",
+    "usernameRequired": "用户名不能为空",
+    "passwordRequired": "密码不能为空",
+    "logout": "退出登录",
+    "profile": "个人资料",
+    "intelligentDocumentPlatform": "你的智能文档管理平台",
+    "errors": {
+      "invalidCredentials": "用户名或密码无效，请检查凭据后重试。",
+      "accountDisabled": "你的账户已被禁用，请联系管理员获取帮助。",
+      "userNotFound": "未找到该用户名对应的账户，请检查用户名或联系客服。",
+      "sessionExpired": "你的会话已过期，请重新登录。",
+      "networkError": "网络错误，请检查网络连接后重试。",
+      "serverError": "服务器错误，请稍后重试；若问题持续，请联系客服。",
+      "oidcAuthFailed": "OIDC 认证失败，请联系管理员。",
+      "oidcNotConfigured": "此服务器未配置 OIDC，请使用用户名/密码登录。",
+      "oidcInitFailed": "OIDC 登录初始化失败，请重试。",
+      "loginFailed": "登录失败，请检查你的凭据。"
+    }
+  },
+  "navigation": {
+    "dashboard": "仪表盘",
+    "upload": "上传",
+    "documents": "文档",
+    "search": "搜索",
+    "labels": "标签",
+    "sources": "来源",
+    "watchFolder": "监控文件夹",
+    "documentManagement": "文档管理",
+    "ignoredFiles": "忽略文件"
+  },
+  "dashboard": {
+    "greeting": "以下是你今日的文档动态。",
+    "stats": {
+      "totalDocuments": {
+        "title": "文档总数",
+        "subtitle": "你的文库中的文件",
+        "trend": "总计 {{count}} 个",
+        "trendEmpty": "暂无文档"
+      },
+      "storageUsed": {
+        "title": "已用存储空间",
+        "subtitle": "文件总大小",
+        "trend": "已使用 {{size}}",
+        "trendEmpty": "未使用任何存储空间"
+      },
+      "ocrProcessed": {
+        "title": "OCR 处理完成",
+        "subtitle": "已提取文本的文档",
+        "trend": "完成度 {{percentage}}%",
+        "trendEmpty": "完成度 0%"
+      },
+      "searchable": {
+        "title": "可搜索",
+        "subtitle": "已准备好搜索",
+        "trend": "已索引 {{count}} 个",
+        "trendEmpty": "暂无索引内容"
+      }
+    },
+    "recentDocuments": {
+      "title": "最近文档",
+      "viewAll": "查看全部",
+      "noDocuments": "暂无文档",
+      "uploadFirst": "上传你的第一个文档开始使用"
+    },
+    "quickActions": {
+      "title": "快捷操作",
+      "upload": {
+        "title": "上传文档",
+        "description": "添加新文件进行 OCR 处理"
+      },
+      "search": {
+        "title": "搜索文库",
+        "description": "按内容或元数据查找文档"
+      },
+      "browse": {
+        "title": "浏览文档",
+        "description": "查看并管理你的文档库"
+      }
+    }
+  },
+  "search": {
+    "title": "搜索文档",
+    "placeholder": "按内容、文件名或标签搜索文档... 试试「发票」「合同」或 tag:重要",
+    "searchPlaceholder": "搜索文档...",
+    "noResults": {
+      "title": "未找到“{{query}}”相关结果",
+      "subtitle": "尝试调整搜索词或筛选条件",
+      "suggestions": {
+        "title": "建议：",
+        "simpler": "尝试更简单或通用的词汇",
+        "spelling": "检查拼写并尝试不同关键词",
+        "removeFilters": "移除部分筛选条件以扩大搜索范围",
+        "useQuotes": "使用引号匹配精确短语"
+      }
+    },
+    "searching": "搜索中...",
+    "searchingAsYouType": "边输入边搜索...",
+    "quickResults": "快速结果",
+    "resultsCount": "找到 {{count}} 个结果",
+    "viewAllResults": "查看“{{query}}”的全部结果",
+    "recentSearches": "最近搜索",
+    "startTyping": "开始输入以搜索文档",
+    "popularSearches": "热门搜索：",
+    "noDocumentsFound": "未找到“{{query}}”相关文档",
+    "pressEnterAdvanced": "按回车键使用高级选项搜索",
+    "trySuggestions": "试试这些建议：",
+    "settings": {
+      "title": "搜索设置"
+    },
+    "modes": {
+      "smart": "智能",
+      "exactPhrase": "精确短语",
+      "similarWords": "相似词汇",
+      "advanced": "高级",
+      "enhanced": "增强版"
+    },
+    "quickSuggestions": {
+      "title": "快速建议："
+    },
+    "relatedSearches": {
+      "title": "相关搜索："
+    },
+    "filters": {
+      "title": "筛选条件",
+      "tags": "标签",
+      "selectTags": "选择标签",
+      "ocrStatus": "OCR 状态",
+      "ocrText": "OCR 文本",
+      "allDocuments": "全部文档",
+      "hasOcrText": "包含 OCR 文本",
+      "noOcrText": "无 OCR 文本",
+      "dateRange": "日期范围",
+      "daysAgo": "几天前：{{min}} - {{max}}",
+      "dateMarks": {
+        "today": "今天",
+        "30d": "30天内",
+        "90d": "90天内",
+        "1y": "1年内"
+      },
+      "fileSize": "文件大小",
+      "sizeRange": "大小：{{min}}MB - {{max}}MB"
+    },
+    "status": {
+      "searching": "搜索中...",
+      "resultsFound": "找到 {{count}} 个结果"
+    },
+    "display": {
+      "settings": "显示设置",
+      "textSettings": "文本显示设置",
+      "fontSizeLabel": "字体大小：{{size}}px",
+      "snippetsPerResult": "每条结果显示摘要数：{{count}}",
+      "contextLength": "上下文长度：{{length}} 字符",
+      "viewMode": {
+        "label": "查看模式",
+        "compact": "简洁",
+        "detailed": "详细",
+        "contextFocus": "上下文聚焦"
+      },
+      "highlightStyle": {
+        "label": "高亮样式",
+        "background": "背景色",
+        "underline": "下划线",
+        "bold": "粗体文本"
+      }
+    },
+    "results": {
+      "showing": "显示：",
+      "snippetsCount": "{{count}} 个摘要",
+      "fontSize": "{{size}}px 字体",
+      "hasOcr": " • 已OCR",
+      "tags": "标签：",
+      "pagination": "显示 {{start}}-{{end}}，共 {{total}} 条结果"
+    },
+    "empty": {
+      "title": "开始搜索你的文档",
+      "subtitle": "使用上方的增强搜索栏，按内容、文件名或标签查找文档"
+    },
+    "tips": {
+      "title": "搜索技巧：",
+      "exactPhrase": "使用引号匹配精确短语：「项目计划」",
+      "tags": "按标签搜索：tag:重要 或 tag:发票",
+      "combine": "组合关键词：合同 AND 付款",
+      "wildcards": "使用通配符：proj* 匹配 project、projects 等"
+    },
+    "examples": {
+      "invoice": "试试：发票",
+      "contract": "试试：合同",
+      "tagImportant": "试试：tag:重要"
+    },
+    "actions": {
+      "clearFilters": "清空筛选条件",
+      "newSearch": "新建搜索"
+    }
+  },
+  "upload": {
+    "title": "上传文档",
+    "subtitle": "通过智能 OCR 处理转换你的文档",
+    "features": {
+      "aiOcr": {
+        "title": "AI 驱动的 OCR",
+        "description": "从任意文档类型中提取高级文本"
+      },
+      "fullTextSearch": {
+        "title": "全文搜索",
+        "description": "按内容或元数据立即查找文档"
+      },
+      "lightningFast": {
+        "title": "极速处理",
+        "description": "秒级处理文档，无需分钟级等待"
+      },
+      "secure": {
+        "title": "安全私密",
+        "description": "你的文档已加密并受保护"
+      },
+      "multiLanguage": {
+        "title": "多语言支持",
+        "description": "支持 100+ 种语言和文字"
+      }
+    },
+    "tips": {
+      "title": "📋 上传提示",
+      "highRes": "• 为获得最佳 OCR 效果，请使用高分辨率图片",
+      "pdfText": "• 含文本层的 PDF 文件处理速度更快",
+      "clarity": "• 确保文档光线充足、清晰可读",
+      "maxSize": "• 单文档最大文件大小为 50MB"
+    },
+    "dropzone": {
+      "dragDrop": "将文件拖放至此处",
+      "dropHere": "在此处放下文件",
+      "browse": "或点击浏览你的电脑",
+      "chooseFiles": "选择文件",
+      "maxFileSize": "最大文件大小：每个文件 50MB",
+      "fileTypes": {
+        "pdf": "PDF",
+        "images": "图片",
+        "text": "文本",
+        "word": "Word"
+      }
+    },
+    "languageSettings": {
+      "title": "🌐 OCR 语言设置",
+      "description": "选择语言以优化 OCR 文本识别效果"
+    },
+    "documentInfo": {
+      "title": "📋 文档信息",
+      "description": "文档相关信息（带*为必填）"
+    },
+    "labelAssignment": {
+      "title": "📋 标签分配",
+      "description": "选择要自动分配给所有上传文档的标签",
+      "placeholder": "为你的文档选择标签...",
+      "helperText": "这些标签将应用于所有上传的文档"
+    },
+    "fileList": {
+      "title": "文件 ({{count}})",
+      "clearCompleted": "清空已完成",
+      "uploading": "上传中... ({{completed}}/{{total}})",
+      "uploadingSimple": "上传中...",
+      "uploadAll": "全部上传"
+    },
+    "errors": {
+      "sessionExpired": "你的会话已过期，请刷新页面并重新登录。",
+      "labelPermissionDenied": "你没有访问标签的权限。",
+      "labelNetworkError": "加载标签时出现网络错误，请检查网络连接。",
+      "fileTooLarge": "文件过大，最大限制为 50MB。",
+      "unsupportedFormat": "不支持的文件格式，请使用 PDF、图片、文本或 Word 文档。",
+      "processingFailed": "文档处理失败，请重试或联系客服。",
+      "permissionDenied": "你没有上传文档的权限。",
+      "networkError": "网络错误，请检查网络连接后重试。",
+      "serverError": "服务器错误，请稍后重试。"
+    }
+  },
+  "documents": {
+    "title": "文档",
+    "subtitle": "管理和浏览你的文档库",
+    "viewDocument": "查看文档",
+    "downloadDocument": "下载文档",
+    "deleteDocument": "删除文档",
+    "unknownDocument": "未知文档",
+    "search": {
+      "placeholder": "搜索文档..."
+    },
+    "selection": {
+      "select": "选择",
+      "cancel": "取消",
+      "count": "已选择 {{count}} / {{total}} 个文档",
+      "selectAll": "全选",
+      "deselectAll": "取消全选",
+      "deleteSelected": "删除所选 ({{count}})"
+    },
+    "filters": {
+      "ocrStatus": "OCR 状态",
+      "all": "全部",
+      "completed": "已完成",
+      "processing": "处理中",
+      "failed": "失败",
+      "pending": "待处理"
+    },
+    "sort": {
+      "label": "排序",
+      "newestFirst": "最新优先",
+      "oldestFirst": "最早优先",
+      "nameAZ": "名称 A-Z",
+      "nameZA": "名称 Z-A",
+      "largestFirst": "最大优先",
+      "smallestFirst": "最小优先"
+    },
+    "ocrStatus": {
+      "confidence": "OCR 置信度 {{percent}}%",
+      "done": "OCR 完成",
+      "processing": "处理中...",
+      "failed": "OCR 失败",
+      "pending": "排队中"
+    },
+    "actions": {
+      "editLabels": "编辑标签",
+      "retryOcr": "重试 OCR",
+      "retryingOcr": "重试 OCR 中...",
+      "retryHistory": "重试历史"
+    },
+    "empty": {
+      "title": "未找到文档",
+      "searchSubtitle": "尝试调整搜索词",
+      "uploadSubtitle": "上传你的第一个文档开始使用"
+    },
+    "dialogs": {
+      "editLabels": {
+        "title": "编辑文档标签",
+        "placeholder": "为该文档选择标签..."
+      },
+      "delete": {
+        "title": "删除文档",
+        "message": "你确定要删除「{{filename}}」吗？",
+        "warning": "此操作不可撤销，文档文件及所有关联数据将被永久删除。",
+        "deleting": "删除中...",
+        "delete": "删除"
+      },
+      "bulkDelete": {
+        "title": "批量删除文档",
+        "message": "你确定要删除选中的 {{count}} 个文档{{plural}}吗？",
+        "warning": "此操作不可撤销，所有选中的文档及其关联数据将被永久删除。",
+        "listTitle": "待删除文档：",
+        "moreCount": "... 及另外 {{count}} 个",
+        "deleteButton": "删除 {{count}} 个文档{{plural}}"
+      }
+    },
+    "pagination": {
+      "showing": "显示 {{start}}-{{end}}，共 {{total}} 个文档",
+      "withOcrStatus": " （OCR 状态：{{status}}）",
+      "matching": " （匹配「{{query}}」）"
+    }
+  },
+  "documentDetails": {
+    "subtitle": "全面的文档分析和元数据查看器",
+    "tabs": {
+      "preview": "预览",
+      "ocrText": "OCR 文本",
+      "details": "详情",
+      "activity": "活动记录"
+    },
+    "actions": {
+      "backToDocuments": "返回文档列表",
+      "download": "下载",
+      "viewDocument": "查看文档",
+      "viewOcrText": "查看 OCR 文本",
+      "viewProcessedImage": "查看处理后的图片",
+      "retryOcr": "重试 OCR",
+      "retryHistory": "重试历史",
+      "editLabels": "编辑标签",
+      "deleteDocument": "删除文档"
+    },
+    "errors": {
+      "notFound": "文档未找到"
+    },
+    "metadata": {
+      "fileSize": "文件大小",
+      "uploadDate": "上传日期",
+      "sourceType": "来源类型",
+      "originalPath": "原始路径",
+      "originalCreated": "原始创建时间",
+      "originalModified": "原始修改时间",
+      "ocrStatus": "OCR 状态",
+      "textExtracted": "文本已提取"
+    },
+    "ocr": {
+      "title": "提取的文本（OCR）",
+      "expandTooltip": "展开查看完整文本并支持搜索",
+      "expand": "展开",
+      "loading": "加载 OCR 分析...",
+      "confidence": "置信度",
+      "words": "词汇数",
+      "processingTime": "处理时间",
+      "error": "OCR 处理错误",
+      "noText": "此文档暂无可用的 OCR 文本。",
+      "completed": "处理完成时间：{{date}}",
+      "loadFailed": "OCR 文本存在但加载失败，请尝试刷新页面。"
+    },
+    "tagsLabels": {
+      "title": "标签 & 标记",
+      "tags": "标签",
+      "labels": "标记",
+      "noLabels": "此文档未分配任何标记"
+    },
+    "dialogs": {
+      "ocrText": {
+        "title": "提取的文本（OCR）",
+        "confidence": "置信度 {{percent}}%",
+        "words": "{{count}} 个词汇",
+        "loading": "加载 OCR 文本...",
+        "error": "OCR 错误：{{message}}",
+        "noText": "此文档暂无可用的 OCR 文本。",
+        "processingTime": "处理时间：{{time}}毫秒",
+        "completed": "完成时间：{{date}}"
+      },
+      "ocrExpanded": {
+        "title": "提取的文本（OCR）- 完整视图",
+        "searchPlaceholder": "在提取的文本中搜索...",
+        "matches": "找到 {{count}} 个匹配项{{plural}}",
+        "noMatches": "未找到匹配项",
+        "loading": "加载 OCR 文本...",
+        "error": "OCR 错误：{{message}}",
+        "noText": "此文档暂无可用的 OCR 文本。"
+      },
+      "processedImage": {
+        "title": "处理后的图片 - 已应用 OCR 增强",
+        "description": "这是 OCR 引擎实际处理的增强图片，你可在设置页面调整 OCR 增强参数。",
+        "noImage": "暂无处理后的图片"
+      },
+      "editLabels": {
+        "title": "编辑文档标记",
+        "description": "选择要分配给此文档的标记",
+        "placeholder": "为该文档选择标记...",
+        "saveLabels": "保存标记"
+      },
+      "delete": {
+        "title": "删除文档",
+        "warning": "此操作不可撤销。",
+        "message": "你确定要删除 <strong>{{filename}}</strong> 吗？",
+        "details": "这将永久删除该文档及所有关联数据，包括 OCR 文本、标记和处理历史。",
+        "deleting": "删除中...",
+        "delete": "删除文档"
+      }
+    }
+  },
+  "ignoredFiles": {
+    "title": "忽略文件",
+    "subtitle": "查看并管理处理过程中有意忽略的文件",
+    "filters": {
+      "searchPlaceholder": "按文件名或路径搜索...",
+      "reason": "原因",
+      "allReasons": "所有原因",
+      "duplicateHash": "哈希重复",
+      "tooLarge": "文件过大",
+      "unsupportedFormat": "格式不支持",
+      "excluded": "已排除",
+      "permissionDenied": "权限拒绝",
+      "corrupted": "文件损坏",
+      "other": "其他"
+    },
+    "table": {
+      "filename": "文件名",
+      "path": "路径",
+      "reason": "原因",
+      "size": "大小",
+      "ignoredAt": "忽略时间"
+    },
+    "empty": {
+      "title": "无忽略文件",
+      "subtitle": "暂无被忽略的文件，所有处理的文件均已成功处理。"
+    },
+    "noResults": {
+      "title": "未找到结果",
+      "subtitle": "暂无忽略文件匹配当前筛选条件，请调整搜索或筛选条件。"
+    },
+    "pagination": {
+      "showing": "显示 {{start}}-{{end}}，共 {{total}} 个忽略文件"
+    },
+    "errors": {
+      "loadFailed": "加载忽略文件失败",
+      "tryAgain": "请稍后重试"
+    },
+    "reasons": {
+      "duplicate_hash": "哈希重复 - 系统中已存在该文件",
+      "file_too_large": "文件过大 - 超出最大大小限制",
+      "unsupported_format": "格式不支持 - 文件类型不受支持",
+      "excluded_by_pattern": "已排除 - 文件匹配排除规则",
+      "permission_denied": "权限拒绝 - 无法访问文件",
+      "file_corrupted": "文件损坏 - 无法读取或处理文件",
+      "unknown": "未知 - 未指定原因"
+    }
+  },
+  "documentManagement": {
+    "title": "文档管理",
+    "retryAll": "重试所有文档",
+    "retrying": "全部重试中...",
+    "retryFailedOnly": "仅重试失败项",
+    "tabs": {
+      "failedDocuments": "失败文档",
+      "failedDocumentsTooltip": "查看并管理处理过程中失败的文档（OCR、导入、验证等）",
+      "cleanup": "文档清理",
+      "cleanupTooltip": "管理并清理存在质量问题的文档 - OCR 置信度低或处理失败",
+      "duplicates": "重复文件",
+      "duplicatesTooltip": "查看并管理重复文档组 - 内容完全相同的文档",
+      "ignoredFiles": "忽略文件",
+      "ignoredFilesTooltip": "管理同步操作中被忽略的文件"
+    },
+    "stats": {
+      "totalFailed": "失败总数",
+      "failureCategories": "失败分类",
+      "noFailureData": "暂无失败数据"
+    },
+    "advancedRetry": {
+      "title": "高级重试选项",
+      "button": "高级重试",
+      "description": "使用高级筛选和选择选项，根据文件类型、失败原因、大小等重试特定子集的失败文档。"
+    },
+    "filters": {
+      "title": "筛选选项",
+      "stage": "按阶段筛选",
+      "reason": "按原因筛选",
+      "allStages": "所有阶段",
+      "allReasons": "所有原因",
+      "clearFilters": "清空筛选条件",
+      "stages": {
+        "ocr": "OCR 处理",
+        "ingestion": "文档导入",
+        "validation": "验证",
+        "storage": "文件存储",
+        "processing": "处理",
+        "sync": "同步"
+      },
+      "reasons": {
+        "duplicateContent": "内容重复",
+        "lowConfidence": "OCR 置信度低",
+        "unsupportedFormat": "格式不支持",
+        "fileTooLarge": "文件过大",
+        "fileCorrupted": "文件损坏",
+        "ocrTimeout": "OCR 超时",
+        "pdfParsingError": "PDF 解析错误",
+        "other": "其他"
+      }
+    },
+    "alerts": {
+      "noFailedTitle": "好消息！",
+      "noFailedMessage": "暂无文档 OCR 处理失败，所有文档均处理成功。",
+      "overviewTitle": "失败文档概览",
+      "overviewMessage": "这些文档在处理的不同阶段失败：导入、验证、OCR、存储等。使用上方筛选条件按失败阶段或具体原因缩小范围，可重试可恢复的失败项。"
+    },
+    "table": {
+      "document": "文档",
+      "failureType": "失败类型",
+      "retryCount": "重试次数",
+      "lastFailed": "最后失败时间",
+      "actions": "操作",
+      "attempts": "{{count}} 次尝试",
+      "unknown": "未知"
+    },
+    "actions": {
+      "retryOcr": "重试 OCR",
+      "viewDetails": "查看详情",
+      "retryHistory": "重试历史",
+      "download": "下载文档"
+    },
+    "details": {
+      "errorDetails": "错误详情",
+      "failureReason": "失败原因",
+      "notSpecified": "未指定",
+      "ocrResults": "OCR 结果",
+      "confidencePercent": "置信度 {{percent}}%",
+      "wordsFound": "找到 {{count}} 个词汇",
+      "errorMessage": "错误信息",
+      "noErrorMessage": "无可用错误信息",
+      "lastAttempt": "最后尝试时间",
+      "noPreviousAttempts": "无之前的尝试记录",
+      "fileCreated": "文件创建时间"
+    },
+    "retry": {
+      "queuedSuccess": "「{{filename}}」的 OCR 重试已排队，预计等待时间：{{minutes}} 分钟。",
+      "unknown": "未知",
+      "failed": "OCR 重试失败",
+      "processingFailed": "OCR 处理重试失败",
+      "bulkSuccess": "已成功将 {{count}} 个文档加入 OCR 重试队列，预计处理时间：{{minutes}} 分钟。",
+      "noDocuments": "未找到可重试的文档",
+      "bulkFailed": "文档重试失败，请重试。",
+      "requeuedSuccess": "已成功将 {{count}} 个失败文档加入 OCR 重试队列，可在队列统计中查看进度。",
+      "noFailedDocuments": "未找到可重试的失败文档",
+      "requeuedFailed": "所有失败的 OCR 文档重试失败",
+      "advancedSuccess": "已成功将 {{matched}} 个文档中的 {{queued}} 个加入重试队列，预计处理时间：{{minutes}} 分钟。"
+    },
+    "cleanup": {
+      "previewFailed": "预览低置信度文档失败",
+      "noDocuments": "无待删除文档",
+      "deleteFailed": "删除低置信度文档失败",
+      "previewFailedDocs": "预览失败文档失败",
+      "deleteFailedDocs": "删除失败文档失败"
+    },
+    "ignoredFiles": {
+      "removedSuccess": "文件已从忽略列表中移除",
+      "deleteFailed": "删除忽略文件失败",
+      "fileRemovedSuccess": "文件已从忽略列表中移除",
+      "fileDeleteFailed": "删除忽略文件失败"
+    },
+    "errors": {
+      "loadFailedDocuments": "加载失败文档失败",
+      "sessionExpired": "你的会话已过期，请刷新页面并重新登录。",
+      "permissionDenied": "你没有查看失败文档的权限。",
+      "noFailedDocumentsFound": "未找到失败文档，或已被处理。",
+      "networkError": "网络错误，请检查网络连接后重试。",
+      "serverError": "服务器错误，请稍后重试。",
+      "loadDuplicates": "加载重复文档失败",
+      "permissionDeniedDuplicates": "你没有查看重复文档的权限。",
+      "documentNotFound": "文档未找到，可能已被删除或处理。",
+      "cannotRetry": "由于处理问题，该文档无法重试，请检查文档格式。",
+      "permissionDeniedRetry": "你没有重试 OCR 处理的权限。",
+      "serverErrorSupport": "服务器错误，请稍后重试或联系客服。",
+      "loadIgnoredFiles": "加载忽略文件失败",
+      "permissionDeniedIgnored": "你没有查看忽略文件的权限。"
+    }
+  },
+  "watchFolder": {
+    "title": "监控文件夹",
+    "refreshAll": "全部刷新",
+    "retryFailedJobs": "重试 {{count}} 个失败任务",
+    "requeuing": "重新排队中...",
+    "personalWatchDirectory": "个人监控目录",
+    "admin": "管理员",
+    "directoryStatus": "目录状态",
+    "directoryExists": "目录存在",
+    "directoryMissing": "目录缺失",
+    "watchStatus": "监控状态",
+    "enabled": "已启用",
+    "disabled": "已禁用",
+    "yourPersonalWatchDirectory": "你的个人监控目录",
+    "directoryNotExist": "你的个人监控目录尚未创建，创建后即可将文件上传至专属文件夹。",
+    "creatingDirectory": "创建目录中...",
+    "createPersonalDirectory": "创建个人目录",
+    "unableToLoad": "无法加载个人监控目录信息，请尝试刷新页面。",
+    "systemConfiguration": "系统配置",
+    "globalWatchFolderConfiguration": "全局监控文件夹配置",
+    "adminOnly": "仅管理员",
+    "systemWideInfo": "这是系统级监控文件夹配置，所有用户均可查看此信息。",
+    "watchedDirectory": "被监控目录",
+    "status": "状态",
+    "active": "活跃",
+    "inactive": "非活跃",
+    "watchStrategy": "监控策略",
+    "scanInterval": "扫描间隔",
+    "seconds": "{{count}} 秒",
+    "maxFileAge": "最大文件时长",
+    "hours": "{{count}} 小时",
+    "supportedFileTypes": "支持的文件类型",
+    "processingQueue": "处理队列",
+    "pending": "待处理",
+    "processing": "处理中",
+    "failed": "失败",
+    "completedToday": "今日已完成",
+    "averageWaitTime": "平均等待时间",
+    "oldestPendingItem": "最早待处理项",
+    "lastUpdated": "最后更新时间：{{time}}",
+    "howWatchFolderWorks": "监控文件夹工作原理",
+    "watchFolderDescription": "监控文件夹系统自动监控配置目录中的新文件，并对其进行 OCR 处理。",
+    "processingPipeline": "处理流程：",
+    "pipelineSteps": {
+      "fileDetection": "文件检测：通过混合监控（inotify + 轮询）检测新文件",
+      "validation": "验证：检查文件是否支持格式及大小限制",
+      "deduplication": "去重：系统防止重复文件被处理",
+      "storage": "存储：文件被移至文档存储系统",
+      "ocrQueue": "OCR 队列：文档按优先级加入 OCR 处理队列"
+    },
+    "hybridStrategyInfo": "系统采用混合监控策略，自动检测文件系统类型并选择最优监控方式（本地文件系统用 inotify，网络挂载用轮询）。"
+  },
+  "settings": {
+    "title": "设置",
+    "apiDocumentation": "API 文档",
+    "debug": "调试",
+    "language": "语言",
+    "selectLanguage": "选择语言",
+    "tabs": {
+      "general": "通用",
+      "ocrSettings": "OCR 设置",
+      "userManagement": "用户管理",
+      "serverConfiguration": "服务器配置"
+    },
+    "general": {
+      "title": "通用设置",
+      "ocrConfiguration": {
+        "title": "OCR 配置",
+        "description": "配置 OCR 文本提取的语言，多语言支持有助于处理混合语言文档。",
+        "autoDetectLanguageCombination": "自动检测语言组合",
+        "autoDetectLanguageCombinationHelper": "基于文档内容分析自动推荐最优语言组合",
+        "concurrentOcrJobs": "并发 OCR 任务数",
+        "concurrentOcrJobsHelper": "可同时运行的 OCR 任务数量",
+        "ocrTimeout": "OCR 超时时间（秒）",
+        "ocrTimeoutHelper": "每个文件的 OCR 处理最长时间",
+        "cpuPriority": "CPU 优先级",
+        "cpuPriorityLow": "低",
+        "cpuPriorityNormal": "正常",
+        "cpuPriorityHigh": "高"
+      },
+      "ocrControls": {
+        "title": "OCR 处理控制（仅管理员）",
+        "description": "控制 OCR 处理以管理 CPU 使用率，确保用户使用应用时无性能影响。",
+        "pauseOcr": "暂停 OCR 处理",
+        "resumeOcr": "恢复 OCR 处理",
+        "ocrStatusLabel": "OCR 状态：{{status}}",
+        "ocrPausedMessage": "OCR 处理已暂停，不会处理新任务。",
+        "ocrActiveMessage": "OCR 处理已激活，文档将自动处理。",
+        "pausedAlertTitle": "OCR 处理已暂停",
+        "pausedAlertMessage": "恢复处理前，新文档将不会进行 OCR 文本提取。用户仍可上传和查看文档，但搜索功能可能受限。"
+      },
+      "fileProcessing": {
+        "title": "文件处理",
+        "maxFileSize": "最大文件大小（MB）",
+        "maxFileSizeHelper": "允许上传的最大文件大小",
+        "memoryLimit": "内存限制（MB）",
+        "memoryLimitHelper": "每个 OCR 任务的内存限制",
+        "autoRotateImages": "自动旋转图片",
+        "autoRotateImagesHelper": "自动检测并校正图片方向",
+        "enableImagePreprocessing": "启用图片预处理",
+        "enableImagePreprocessingHelper": "增强图片以提高 OCR 准确率（去歪斜、去噪、对比度调整）",
+        "preprocessingWarning": "⚠️ 警告：启用预处理可能显著改变 OCR 文本结果，可能降低部分文档的准确率",
+        "enableBackgroundOcr": "启用后台 OCR",
+        "enableBackgroundOcrHelper": "文件上传后在后台处理 OCR"
+      },
+      "searchConfiguration": {
+        "title": "搜索配置",
+        "resultsPerPage": "每页结果数",
+        "snippetLength": "摘要长度",
+        "snippetLengthHelper": "搜索结果预览显示的字符数",
+        "fuzzySearchThreshold": "模糊搜索阈值",
+        "fuzzySearchThresholdHelper": "拼写错误容错率（0.0-1.0）"
+      },
+      "storageManagement": {
+        "title": "存储管理",
+        "retentionDays": "保留天数",
+        "retentionDaysHelper": "X 天后自动删除文档（留空则禁用）",
+        "enableAutoCleanup": "启用自动清理",
+        "enableAutoCleanupHelper": "自动移除孤立文件并清理存储空间",
+        "enableCompression": "启用压缩",
+        "enableCompressionHelper": "压缩存储的文档以节省磁盘空间"
+      }
+    },
+    "ocrSettings": {
+      "title": "OCR 图片处理设置",
+      "enhancementControls": {
+        "title": "增强控制",
+        "skipEnhancement": "跳过所有图片增强（仅使用原始图片）",
+        "brightnessBoost": "亮度提升",
+        "brightnessBoostHelper": "手动亮度调整（0 = 自动，>0 = 提升量）",
+        "contrastMultiplier": "对比度倍数",
+        "contrastMultiplierHelper": "手动对比度调整（1.0 = 自动，>1.0 = 增加）",
+        "noiseReductionLevel": "降噪级别",
+        "noiseReductionNone": "无",
+        "noiseReductionLight": "轻度",
+        "noiseReductionModerate": "中度",
+        "noiseReductionHeavy": "重度",
+        "sharpeningStrength": "锐化强度",
+        "sharpeningStrengthHelper": "图片锐化量（0 = 自动，>0 = 手动）"
+      },
+      "qualityThresholds": {
+        "title": "质量阈值（应用增强的条件）",
+        "brightnessThreshold": "亮度阈值",
+        "brightnessThresholdHelper": "亮度低于此值时增强（0-255）",
+        "contrastThreshold": "对比度阈值",
+        "contrastThresholdHelper": "对比度低于此值时增强（0-1）",
+        "noiseThreshold": "噪点阈值",
+        "noiseThresholdHelper": "噪点高于此值时增强（0-1）",
+        "sharpnessThreshold": "锐度阈值",
+        "sharpnessThresholdHelper": "锐度低于此值时增强（0-1）"
+      },
+      "advancedProcessing": {
+        "title": "高级处理选项",
+        "morphologicalOperations": "形态学操作（文本清理）",
+        "histogramEqualization": "直方图均衡化",
+        "saveProcessedImages": "保存处理后的图片以供审核",
+        "adaptiveThresholdWindowSize": "自适应阈值窗口大小",
+        "adaptiveThresholdWindowSizeHelper": "对比度增强的窗口大小（奇数）"
+      },
+      "imageSizeScaling": {
+        "title": "图片大小和缩放",
+        "maxImageWidth": "最大图片宽度",
+        "maxImageWidthHelper": "图片最大宽度（像素）",
+        "maxImageHeight": "最大图片高度",
+        "maxImageHeightHelper": "图片最大高度（像素）",
+        "upscaleFactor": "放大倍数",
+        "upscaleFactorHelper": "图片缩放倍数（1.0 = 不缩放）"
+      }
+    },
+    "userManagement": {
+      "title": "用户管理",
+      "addUser": "添加用户",
+      "tableHeaders": {
+        "username": "用户名",
+        "email": "邮箱",
+        "createdAt": "创建时间",
+        "watchDirectory": "监控目录",
+        "actions": "操作"
+      },
+      "watchDirectory": {
+        "statusActive": "活跃",
+        "statusDisabled": "已禁用",
+        "statusNotCreated": "未创建",
+        "statusUnknown": "未知",
+        "loading": "加载中...",
+        "createDirectory": "创建监控目录",
+        "viewDirectory": "查看监控目录",
+        "removeDirectory": "移除监控目录（仅管理员）",
+        "editUser": "编辑用户",
+        "deleteUser": "删除用户"
+      },
+      "dialogs": {
+        "createUser": "创建新用户",
+        "editUser": "编辑用户",
+        "username": "用户名",
+        "email": "邮箱",
+        "password": "密码",
+        "newPassword": "新密码（留空则保持原密码）"
+      },
+      "confirmRemoveDirectory": {
+        "title": "移除监控目录",
+        "message": "你确定要移除用户「{{username}}」的监控目录吗？此操作不可撤销，将停止监控其目录中的新文件。",
+        "removeButton": "移除目录"
+      }
+    },
+    "serverConfiguration": {
+      "title": "服务器配置（仅管理员）",
+      "fileUpload": {
+        "title": "文件上传配置",
+        "maxFileSize": "最大文件大小",
+        "uploadPath": "上传路径",
+        "allowedFileTypes": "允许的文件类型",
+        "watchFolder": "监控文件夹"
+      },
+      "ocrProcessing": {
+        "title": "OCR 处理配置",
+        "concurrentOcrJobs": "并发 OCR 任务数",
+        "ocrTimeout": "OCR 超时时间",
+        "memoryLimit": "内存限制",
+        "ocrLanguage": "OCR 语言",
+        "cpuPriority": "CPU 优先级",
+        "backgroundOcr": "后台 OCR",
+        "enabled": "已启用",
+        "disabled": "已禁用"
+      },
+      "serverInformation": {
+        "title": "服务器信息",
+        "serverHost": "服务器主机",
+        "serverPort": "服务器端口",
+        "jwtSecret": "JWT 密钥",
+        "configured": "已配置"
+      }
+    }
+  }
+}

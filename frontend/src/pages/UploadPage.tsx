@@ -74,7 +74,7 @@ const UploadPage: React.FC = () => {
   };
 
   return (
-    <Container maxWidth="lg">
+      <Box sx={{ p: 3 }}>
       <Box sx={{ mb: 4 }}>
         <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
           {t('upload.title')}
@@ -84,17 +84,20 @@ const UploadPage: React.FC = () => {
         </Typography>
       </Box>
 
-      <Grid container spacing={4}>
+      {/* Upload Zone */}
+      <UploadZone onUploadComplete={handleUploadComplete} />
+
+      {/* <Grid container spacing={4}> */}
         {/* Upload Zone */}
-        <Grid item xs={12} lg={8}>
+        {/* <Grid item xs={12} lg={8}>
           <UploadZone onUploadComplete={handleUploadComplete} />
-        </Grid>
+        </Grid> */}
 
         {/* Features Sidebar */}
-        <Grid item xs={12} lg={4}>
+        {/* <Grid item xs={12} lg={4}> */}
 
           {/* Tips Card */}
-          <Card elevation={0} sx={{ mt: 3 }}>
+          {/* <Card elevation={0} sx={{ mt: 3 }}>
             <CardContent>
               <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
                 {t('upload.tips.title')}
@@ -124,8 +127,8 @@ const UploadPage: React.FC = () => {
             </CardContent>
           </Card>
         </Grid>
-      </Grid>
-    </Container>
+      </Grid> */}
+    </Box>
   );
 };
 

@@ -14,7 +14,7 @@ test.describe('Document Upload', () => {
 
   test('should display upload interface', async ({ dynamicAdminPage: page }) => {
     // Check if we can see the upload page (not stuck on login)
-    const isOnLoginPage = await page.locator('h3:has-text("Welcome to Readur")').isVisible({ timeout: 2000 });
+    const isOnLoginPage = await page.locator('h3:has-text("Welcome to DMS")').isVisible({ timeout: 2000 });
     if (isOnLoginPage) {
       throw new Error('Test is stuck on login page - authentication failed');
     }
@@ -56,7 +56,7 @@ test.describe('Document Upload', () => {
 
   test('should upload single document successfully', async ({ dynamicAdminPage: page }) => {
     // Check if we can see the upload page (not stuck on login)
-    const isOnLoginPage = await page.locator('h3:has-text("Welcome to Readur")').isVisible({ timeout: 2000 });
+    const isOnLoginPage = await page.locator('h3:has-text("Welcome to DMS")').isVisible({ timeout: 2000 });
     if (isOnLoginPage) {
       throw new Error('Test is stuck on login page - authentication failed');
     }

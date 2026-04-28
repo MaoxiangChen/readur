@@ -1,11 +1,11 @@
 {
   "common": {
-    "appName": "Readur",
+    "appName": "DMS",
     "appTagline": "Plataforma de Documentos IA",
     "welcome": "Bienvenido a {{appName}}",
     "welcomeBack": "¡Bienvenido de nuevo, {{username}}! 👋",
     "or": "o",
-    "copyright": "© 2026 Readur. Impulsado por tecnología avanzada de OCR e IA.",
+    "copyright": "© 2026 DMS. Impulsado por tecnología avanzada de OCR e IA.",
     "actions": {
       "save": "Guardar",
       "cancel": "Cancelar",
@@ -300,6 +300,10 @@
     "languageSettings": {
       "title": "🌐 Configuración de Idioma OCR",
       "description": "Selecciona idiomas para reconocimiento óptimo de texto OCR"
+    },
+    "documentInfo": {
+      "title": "📋 Document Information",
+      "description": "Provide details about the document"
     },
     "labelAssignment": {
       "title": "📋 Asignación de Etiquetas",

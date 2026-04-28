@@ -19,6 +19,7 @@ import {
   useTheme,
   Divider,
 } from '@mui/material';
+import Grid from '@mui/material/GridLegacy';
 import {
   CloudUpload as UploadIcon,
   InsertDriveFile as FileIcon,
@@ -35,6 +36,11 @@ import { useNotifications } from '../../contexts/NotificationContext';
 import LabelSelector from '../Labels/LabelSelector';
 import { type LabelData } from '../Labels/Label';
 import LanguageSelector from '../LanguageSelector';
+import DocumentInfoForm from '../DocumentDetails/DocumentInfoForm';
+import {
+  DEFAULT_DOCUMENT_INFO_FORM,
+  type DocumentInfoFormData,
+} from '../../types/documentInfo';
 
 interface UploadedDocument {
   id: string;
@@ -78,6 +84,7 @@ const UploadZone: React.FC<UploadZoneProps> = ({ onUploadComplete }) => {
   const [labelsLoading, setLabelsLoading] = useState<boolean>(false);
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
   const [primaryLanguage, setPrimaryLanguage] = useState<string>('');
+  const [documentInfo, setDocumentInfo] = useState<DocumentInfoFormData>(DEFAULT_DOCUMENT_INFO_FORM);
 
   useEffect(() => {
     fetchLabels();
@@ -166,6 +173,15 @@ const UploadZone: React.FC<UploadZoneProps> = ({ onUploadComplete }) => {
     }
   };
 
+  const handleDocumentInfoChange = (field: keyof DocumentInfoFormData) => (
+    event: React.ChangeEvent<HTMLInputElement | { value: unknown }> | { target: { value: unknown } }
+  ) => {
+    setDocumentInfo(prev => ({
+      ...prev,
+      [field]: event.target.value,
+    }));
+  };
+
   const onDrop = useCallback((acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
     setError('');
     
@@ -223,6 +239,12 @@ const UploadZone: React.FC<UploadZoneProps> = ({ onUploadComplete }) => {
     setConcurrentUploads(prev => new Set(prev.add(uploadId)));
     const formData = new FormData();
     formData.append('file', fileItem.file);
+
+    // Add document info to the form data
+    const hasDocumentInfo = Object.values(documentInfo).some(v => v && v !== '');
+    if (hasDocumentInfo) {
+      formData.append('document_info', JSON.stringify(documentInfo));
+    }
     
     // Add selected labels to the form data
     if (selectedLabels.length > 0) {
@@ -458,263 +480,287 @@ const UploadZone: React.FC<UploadZoneProps> = ({ onUploadComplete }) => {
 
   return (
     <Box>
-      {/* Upload Drop Zone */}
-      <Card 
-        elevation={0}
-        sx={{ 
-          mb: 3,
-          border: `2px dashed ${isDragActive ? theme.palette.primary.main : theme.palette.divider}`,
-          backgroundColor: isDragActive ? alpha(theme.palette.primary.main, 0.04) : 'transparent',
-          transition: 'all 0.2s ease-in-out',
-        }}
-      >
-        <CardContent>
-          <Box
-            {...getRootProps()}
-            sx={{
-              textAlign: 'center',
-              py: 6,
-              cursor: 'pointer',
-              outline: 'none',
+      <Grid container spacing={4}>
+        <Grid item xs={12} lg={4}>
+
+          {/* Upload Drop Zone */}
+          <Card 
+            elevation={0}
+            sx={{ 
+              mb: 3,
+              border: `2px dashed ${isDragActive ? theme.palette.primary.main : theme.palette.divider}`,
+              backgroundColor: isDragActive ? alpha(theme.palette.primary.main, 0.04) : 'transparent',
+              transition: 'all 0.2s ease-in-out',
             }}
           >
-            <input {...getInputProps()} />
-            
-            <UploadIcon 
-              sx={{ 
-                fontSize: 64, 
-                color: isDragActive ? 'primary.main' : 'text.secondary',
-                mb: 2,
-              }} 
-            />
-            
-            <Typography variant="h6" sx={{ mb: 1, fontWeight: 600 }}>
-              {isDragActive ? t('upload.dropzone.dropHere') : t('upload.dropzone.dragDrop')}
-            </Typography>
+            <CardContent>
+              <Box
+                {...getRootProps()}
+                sx={{
+                  textAlign: 'center',
+                  py: 6,
+                  cursor: 'pointer',
+                  outline: 'none',
+                }}
+              >
+                <input {...getInputProps()} />
+                
+                <UploadIcon 
+                  sx={{ 
+                    fontSize: 64, 
+                    color: isDragActive ? 'primary.main' : 'text.secondary',
+                    mb: 2,
+                  }} 
+                />
+                
+                <Typography variant="h6" sx={{ mb: 1, fontWeight: 600 }}>
+                  {isDragActive ? t('upload.dropzone.dropHere') : t('upload.dropzone.dragDrop')}
+                </Typography>
 
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-              {t('upload.dropzone.browse')}
-            </Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+                  {t('upload.dropzone.browse')}
+                </Typography>
 
-            <Button
-              variant="contained"
-              sx={{
-                mb: 2,
-                borderRadius: 2,
-                px: 3,
-              }}
-            >
-              {t('upload.dropzone.chooseFiles')}
-            </Button>
+                <Button
+                  variant="contained"
+                  sx={{
+                    mb: 2,
+                    borderRadius: 2,
+                    px: 3,
+                  }}
+                >
+                  {t('upload.dropzone.chooseFiles')}
+                </Button>
 
-            <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1, flexWrap: 'wrap' }}>
-              <Chip label={t('upload.dropzone.fileTypes.pdf')} size="small" variant="outlined" />
-              <Chip label={t('upload.dropzone.fileTypes.images')} size="small" variant="outlined" />
-              <Chip label={t('upload.dropzone.fileTypes.text')} size="small" variant="outlined" />
-              <Chip label={t('upload.dropzone.fileTypes.word')} size="small" variant="outlined" />
-            </Box>
+                <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1, flexWrap: 'wrap' }}>
+                  <Chip label={t('upload.dropzone.fileTypes.pdf')} size="small" variant="outlined" />
+                  <Chip label={t('upload.dropzone.fileTypes.images')} size="small" variant="outlined" />
+                  <Chip label={t('upload.dropzone.fileTypes.text')} size="small" variant="outlined" />
+                  <Chip label={t('upload.dropzone.fileTypes.word')} size="small" variant="outlined" />
+                </Box>
 
-            <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 2 }}>
-              {t('upload.dropzone.maxFileSize')}
-            </Typography>
-          </Box>
-        </CardContent>
-      </Card>
+                <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 2 }}>
+                  {t('upload.dropzone.maxFileSize')}
+                </Typography>
+              </Box>
+            </CardContent>
+          </Card>
+
+          {/* File List */}
+          {files.length > 0 && (
+            <Card elevation={0} sx={{ mb: 3 }}>
+              <CardContent>
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+                  <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                    {t('upload.fileList.title', { count: files.length })}
+                  </Typography>
+                  <Box sx={{ display: 'flex', gap: 1 }}>
+                    <Button
+                      size="small"
+                      onClick={clearCompleted}
+                      disabled={!files.some(f => f.status === 'success')}
+                    >
+                      {t('upload.fileList.clearCompleted')}
+                    </Button>
+                    <Button
+                      variant="contained"
+                      size="small"
+                      onClick={uploadAllFiles}
+                      disabled={uploading || !files.some(f => f.status === 'pending' || f.status === 'error' || f.status === 'timeout')}
+                      sx={{ borderRadius: 2 }}
+                    >
+                      {uploading ? (
+                        uploadProgress.total > 0 ?
+                          t('upload.fileList.uploading', { completed: uploadProgress.completed, total: uploadProgress.total }) :
+                          t('upload.fileList.uploadingSimple')
+                      ) : t('upload.fileList.uploadAll')}
+                    </Button>
+                  </Box>
+                </Box>
+
+                <List sx={{ p: 0 }}>
+                  {files.map((fileItem, index) => (
+                    <ListItem 
+                      key={fileItem.id}
+                      sx={{ 
+                        px: 0,
+                        py: 2,
+                        borderBottom: index < files.length - 1 ? 1 : 0,
+                        borderColor: 'divider',
+                        cursor: fileItem.status === 'success' && fileItem.documentId ? 'pointer' : 'default',
+                        '&:hover': fileItem.status === 'success' && fileItem.documentId ? {
+                          backgroundColor: alpha(theme.palette.primary.main, 0.04),
+                        } : {},
+                      }}
+                      onClick={() => handleFileClick(fileItem)}
+                    >
+                      <ListItemIcon>
+                        <Box sx={{ color: getStatusColor(fileItem.status) }}>
+                          {getStatusIcon(fileItem.status)}
+                        </Box>
+                      </ListItemIcon>
+                      
+                      <ListItemText
+                        sx={{ 
+                          pr: 6, // Add padding-right to prevent overlap with secondary action
+                        }}
+                        primary={
+                          <Typography 
+                            variant="subtitle2" 
+                            sx={{ 
+                              fontWeight: 500,
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              whiteSpace: 'nowrap',
+                              maxWidth: '100%',
+                            }}
+                            title={fileItem.file.name}
+                          >
+                            {fileItem.file.name}
+                          </Typography>
+                        }
+                        secondary={
+                          <Box>
+                            <Typography variant="caption" color="text.secondary">
+                              {formatFileSize(fileItem.file.size)}
+                            </Typography>
+                            {fileItem.status === 'uploading' && (
+                              <Box sx={{ mt: 1 }}>
+                                <LinearProgress 
+                                  variant="determinate" 
+                                  value={fileItem.progress}
+                                  sx={{ height: 4, borderRadius: 2 }}
+                                />
+                                <Typography variant="caption" color="text.secondary">
+                                  {fileItem.progress}%
+                                </Typography>
+                              </Box>
+                            )}
+                            {fileItem.error && (
+                              <Typography 
+                                variant="caption" 
+                                color={fileItem.status === 'timeout' ? 'warning' : 'error'} 
+                                sx={{ display: 'block', mt: 0.5 }}
+                                title={fileItem.errorCode ? `Error Code: ${fileItem.errorCode}` : undefined}
+                              >
+                                {fileItem.error}
+                                {fileItem.retryCount && fileItem.retryCount > 0 && (
+                                  <span style={{ marginLeft: '8px', fontSize: '0.8em' }}>
+                                    (Attempt {fileItem.retryCount + 1})
+                                  </span>
+                                )}
+                              </Typography>
+                            )}
+                          </Box>
+                        }
+                      />
+                      
+                      <ListItemSecondaryAction>
+                        <Box sx={{ display: 'flex', gap: 0.5 }}>
+                          {(fileItem.status === 'error' || fileItem.status === 'timeout') && (
+                            <IconButton 
+                              size="small" 
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                retryUpload(fileItem);
+                              }}
+                              sx={{ color: 'primary.main' }}
+                              title={`Retry upload${fileItem.errorCode ? ` (Error: ${fileItem.errorCode})` : ''}`}
+                            >
+                              <RefreshIcon fontSize="small" />
+                            </IconButton>
+                          )}
+                          <IconButton 
+                            size="small" 
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              removeFile(fileItem.id);
+                            }}
+                            disabled={fileItem.status === 'uploading'}
+                          >
+                            <DeleteIcon fontSize="small" />
+                          </IconButton>
+                        </Box>
+                      </ListItemSecondaryAction>
+                    </ListItem>
+                  ))}
+                </List>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Label Selection */}
+          <Card elevation={0} sx={{ mb: 3 }}>
+            <CardContent>
+              <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
+                {t('upload.labelAssignment.title')}
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                {t('upload.labelAssignment.description')}
+              </Typography>
+              <LabelSelector
+                selectedLabels={selectedLabels}
+                availableLabels={availableLabels}
+                onLabelsChange={setSelectedLabels}
+                onCreateLabel={handleCreateLabel}
+                placeholder={t('upload.labelAssignment.placeholder')}
+                size="medium"
+                disabled={labelsLoading}
+              />
+              {selectedLabels.length > 0 && (
+                <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
+                  {t('upload.labelAssignment.helperText')}
+                </Typography>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Language Selection */}
+          <Card elevation={0} sx={{ mb: 3 }}>
+            <CardContent>
+              <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
+                {t('upload.languageSettings.title')}
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                {t('upload.languageSettings.description')}
+              </Typography>
+              <Box sx={{ '& > div': { width: '100%' } }}>
+                <LanguageSelector
+                  selectedLanguages={selectedLanguages}
+                  primaryLanguage={primaryLanguage}
+                  onLanguagesChange={handleLanguagesChange}
+                  disabled={uploading}
+                />
+              </Box>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        <Grid item xs={12} lg={8}>
+
+          {/* Document Information */}
+          <Card elevation={0} sx={{ mb: 3 }}>
+            <CardContent>
+              <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
+                {t('upload.documentInfo.title') || '文档信息'}
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                {t('upload.documentInfo.description') || '文档相关信息（带*为必填）'}
+              </Typography>
+              <DocumentInfoForm
+                formData={documentInfo}
+                onChange={handleDocumentInfoChange}
+              />
+            </CardContent>
+          </Card>
+        </Grid> 
+      </Grid>
 
       {/* Error Alert */}
       {error && (
         <Alert severity="error" sx={{ mb: 3, borderRadius: 2 }}>
           {error}
         </Alert>
-      )}
-
-      {/* Language Selection */}
-      <Card elevation={0} sx={{ mb: 3 }}>
-        <CardContent>
-          <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
-            {t('upload.languageSettings.title')}
-          </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-            {t('upload.languageSettings.description')}
-          </Typography>
-          <Box sx={{ '& > div': { width: '100%' } }}>
-            <LanguageSelector
-              selectedLanguages={selectedLanguages}
-              primaryLanguage={primaryLanguage}
-              onLanguagesChange={handleLanguagesChange}
-              disabled={uploading}
-            />
-          </Box>
-        </CardContent>
-      </Card>
-
-      {/* Label Selection */}
-      <Card elevation={0} sx={{ mb: 3 }}>
-        <CardContent>
-          <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
-            {t('upload.labelAssignment.title')}
-          </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-            {t('upload.labelAssignment.description')}
-          </Typography>
-          <LabelSelector
-            selectedLabels={selectedLabels}
-            availableLabels={availableLabels}
-            onLabelsChange={setSelectedLabels}
-            onCreateLabel={handleCreateLabel}
-            placeholder={t('upload.labelAssignment.placeholder')}
-            size="medium"
-            disabled={labelsLoading}
-          />
-          {selectedLabels.length > 0 && (
-            <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
-              {t('upload.labelAssignment.helperText')}
-            </Typography>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* File List */}
-      {files.length > 0 && (
-        <Card elevation={0}>
-          <CardContent>
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
-              <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                {t('upload.fileList.title', { count: files.length })}
-              </Typography>
-              <Box sx={{ display: 'flex', gap: 1 }}>
-                <Button
-                  size="small"
-                  onClick={clearCompleted}
-                  disabled={!files.some(f => f.status === 'success')}
-                >
-                  {t('upload.fileList.clearCompleted')}
-                </Button>
-                <Button
-                  variant="contained"
-                  size="small"
-                  onClick={uploadAllFiles}
-                  disabled={uploading || !files.some(f => f.status === 'pending' || f.status === 'error' || f.status === 'timeout')}
-                  sx={{ borderRadius: 2 }}
-                >
-                  {uploading ? (
-                    uploadProgress.total > 0 ?
-                      t('upload.fileList.uploading', { completed: uploadProgress.completed, total: uploadProgress.total }) :
-                      t('upload.fileList.uploadingSimple')
-                  ) : t('upload.fileList.uploadAll')}
-                </Button>
-              </Box>
-            </Box>
-
-            <List sx={{ p: 0 }}>
-              {files.map((fileItem, index) => (
-                <ListItem 
-                  key={fileItem.id}
-                  sx={{ 
-                    px: 0,
-                    py: 2,
-                    borderBottom: index < files.length - 1 ? 1 : 0,
-                    borderColor: 'divider',
-                    cursor: fileItem.status === 'success' && fileItem.documentId ? 'pointer' : 'default',
-                    '&:hover': fileItem.status === 'success' && fileItem.documentId ? {
-                      backgroundColor: alpha(theme.palette.primary.main, 0.04),
-                    } : {},
-                  }}
-                  onClick={() => handleFileClick(fileItem)}
-                >
-                  <ListItemIcon>
-                    <Box sx={{ color: getStatusColor(fileItem.status) }}>
-                      {getStatusIcon(fileItem.status)}
-                    </Box>
-                  </ListItemIcon>
-                  
-                  <ListItemText
-                    sx={{ 
-                      pr: 6, // Add padding-right to prevent overlap with secondary action
-                    }}
-                    primary={
-                      <Typography 
-                        variant="subtitle2" 
-                        sx={{ 
-                          fontWeight: 500,
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          whiteSpace: 'nowrap',
-                          maxWidth: '100%',
-                        }}
-                        title={fileItem.file.name}
-                      >
-                        {fileItem.file.name}
-                      </Typography>
-                    }
-                    secondary={
-                      <Box>
-                        <Typography variant="caption" color="text.secondary">
-                          {formatFileSize(fileItem.file.size)}
-                        </Typography>
-                        {fileItem.status === 'uploading' && (
-                          <Box sx={{ mt: 1 }}>
-                            <LinearProgress 
-                              variant="determinate" 
-                              value={fileItem.progress}
-                              sx={{ height: 4, borderRadius: 2 }}
-                            />
-                            <Typography variant="caption" color="text.secondary">
-                              {fileItem.progress}%
-                            </Typography>
-                          </Box>
-                        )}
-                        {fileItem.error && (
-                          <Typography 
-                            variant="caption" 
-                            color={fileItem.status === 'timeout' ? 'warning' : 'error'} 
-                            sx={{ display: 'block', mt: 0.5 }}
-                            title={fileItem.errorCode ? `Error Code: ${fileItem.errorCode}` : undefined}
-                          >
-                            {fileItem.error}
-                            {fileItem.retryCount && fileItem.retryCount > 0 && (
-                              <span style={{ marginLeft: '8px', fontSize: '0.8em' }}>
-                                (Attempt {fileItem.retryCount + 1})
-                              </span>
-                            )}
-                          </Typography>
-                        )}
-                      </Box>
-                    }
-                  />
-                  
-                  <ListItemSecondaryAction>
-                    <Box sx={{ display: 'flex', gap: 0.5 }}>
-                      {(fileItem.status === 'error' || fileItem.status === 'timeout') && (
-                        <IconButton 
-                          size="small" 
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            retryUpload(fileItem);
-                          }}
-                          sx={{ color: 'primary.main' }}
-                          title={`Retry upload${fileItem.errorCode ? ` (Error: ${fileItem.errorCode})` : ''}`}
-                        >
-                          <RefreshIcon fontSize="small" />
-                        </IconButton>
-                      )}
-                      <IconButton 
-                        size="small" 
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          removeFile(fileItem.id);
-                        }}
-                        disabled={fileItem.status === 'uploading'}
-                      >
-                        <DeleteIcon fontSize="small" />
-                      </IconButton>
-                    </Box>
-                  </ListItemSecondaryAction>
-                </ListItem>
-              ))}
-            </List>
-          </CardContent>
-        </Card>
       )}
     </Box>
   );

@@ -13,6 +13,7 @@ use crate::{
     models::{SearchRequest, SearchResponse, EnhancedDocumentResponse, SearchFacetsResponse},
     AppState,
 };
+use tracing::{error, info};
 
 pub fn router() -> Router<Arc<AppState>> {
     Router::new()
@@ -142,13 +143,19 @@ async fn enhanced_search_documents(
         .db
         .count_search_documents(auth_user.user.id, auth_user.user.role.clone(), &search_request)
         .await
-        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+        .map_err(|e| {
+            error!("count_search_documents error: {:?}", e);
+            StatusCode::INTERNAL_SERVER_ERROR
+        })?;
 
     let documents = state
         .db
         .enhanced_search_documents_with_role(auth_user.user.id, auth_user.user.role, &search_request)
         .await
-        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+        .map_err(|e| {
+            error!("enhanced_search_documents_with_role error: {:?}", e);
+            StatusCode::INTERNAL_SERVER_ERROR
+        })?;
 
     let query_time = start_time.elapsed().as_millis() as u64;
 

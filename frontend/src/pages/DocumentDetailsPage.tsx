@@ -32,6 +32,7 @@ import OcrTextTab from '../components/DocumentDetails/OcrTextTab';
 import DetailsTab from '../components/DocumentDetails/DetailsTab';
 import ActivityTab from '../components/DocumentDetails/ActivityTab';
 import CommentsTab from '../components/DocumentDetails/CommentsTab';
+import InfoTab from '../components/DocumentDetails/InfoTab';
 import SharedLinkDialog from '../components/SharedLinks/SharedLinkDialog';
 import SharedLinksManager from '../components/SharedLinks/SharedLinksManager';
 
@@ -362,6 +363,7 @@ const DocumentDetailsPage: React.FC = () => {
             }}
           >
             <Tab label={t('documentDetails.tabs.ocrText')} />
+            <Tab label="Info" />
             <Tab label={t('documentDetails.tabs.preview')} />
             <Tab label="Comments" />
           </Tabs>
@@ -409,6 +411,10 @@ const DocumentDetailsPage: React.FC = () => {
           )}
 
           {tabValue === 1 && (
+            <InfoTab documentId={id} />
+          )}
+
+          {tabValue === 2 && (
             <PreviewTab
               document={document}
               processedImageLoading={processedImageLoading}
@@ -417,7 +423,7 @@ const DocumentDetailsPage: React.FC = () => {
             />
           )}
 
-          {tabValue === 2 && id && (
+          {tabValue === 3 && id && (
             <CommentsTab documentId={id} />
           )}
         </Box>

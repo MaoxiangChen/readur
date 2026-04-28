@@ -1,6 +1,7 @@
 use anyhow::Result;
 use sqlx::{QueryBuilder, Postgres, Row};
 use uuid::Uuid;
+use tracing::{error, info};
 
 use crate::models::{Document, UserRole, SearchRequest, SearchMode, SearchSnippet, HighlightRange, EnhancedDocumentResponse};
 use super::helpers::{map_row_to_document, apply_role_based_filter, apply_pagination, find_word_boundary, DOCUMENT_FIELDS};
@@ -11,16 +12,44 @@ impl Database {
     pub async fn search_documents(&self, user_id: Uuid, search_request: &SearchRequest) -> Result<Vec<Document>> {
         let mut query = QueryBuilder::<Postgres>::new("SELECT ");
         query.push(DOCUMENT_FIELDS);
-        query.push(" FROM documents WHERE user_id = ");
+        query.push(" FROM documents LEFT JOIN document_info ON documents.id = document_info.document_id WHERE documents.user_id = ");
         query.push_bind(user_id);
 
-        // Add search conditions
+        // Add search conditions for document content
         if !search_request.query.trim().is_empty() {
-            query.push(" AND (to_tsvector('english', COALESCE(content, '')) @@ plainto_tsquery('english', ");
+            query.push(" AND (to_tsvector('english', COALESCE(documents.content, '')) @@ plainto_tsquery('english', ");
             query.push_bind(&search_request.query);
-            query.push(") OR to_tsvector('english', COALESCE(ocr_text, '')) @@ plainto_tsquery('english', ");
+            query.push(") OR to_tsvector('english', COALESCE(documents.ocr_text, '')) @@ plainto_tsquery('english', ");
             query.push_bind(&search_request.query);
-            query.push("))");
+            query.push(")");
+            // Also search in document_info fields
+            query.push(" OR document_info.document_name ILIKE '%' || ");
+            query.push_bind(&search_request.query);
+            query.push(" || '%'");
+            query.push(" OR document_info.document_number ILIKE '%' || ");
+            query.push_bind(&search_request.query);
+            query.push(" || '%'");
+            query.push(" OR document_info.party_a ILIKE '%' || ");
+            query.push_bind(&search_request.query);
+            query.push(" || '%'");
+            query.push(" OR document_info.party_b ILIKE '%' || ");
+            query.push_bind(&search_request.query);
+            query.push(" || '%'");
+            query.push(" OR document_info.contact_person ILIKE '%' || ");
+            query.push_bind(&search_request.query);
+            query.push(" || '%'");
+            query.push(" OR document_info.contact_phone ILIKE '%' || ");
+            query.push_bind(&search_request.query);
+            query.push(" || '%'");
+            query.push(" OR document_info.service_type ILIKE '%' || ");
+            query.push_bind(&search_request.query);
+            query.push(" || '%'");
+            query.push(" OR document_info.service_location ILIKE '%' || ");
+            query.push_bind(&search_request.query);
+            query.push(" || '%'");
+            query.push(" OR document_info.address ILIKE '%' || ");
+            query.push_bind(&search_request.query);
+            query.push(" || '%')");
         }
 
         // Add label filtering (tags param contains label names)
@@ -41,7 +70,7 @@ impl Database {
             }
         }
 
-        query.push(" ORDER BY created_at DESC");
+        query.push(" ORDER BY documents.created_at DESC");
         
         let limit = search_request.limit.unwrap_or(25);
         let offset = search_request.offset.unwrap_or(0);
@@ -69,22 +98,22 @@ impl Database {
         if !search_query.is_empty() {
             match search_request.search_mode.as_ref().unwrap_or(&SearchMode::Simple) {
                 SearchMode::Simple => {
-                    query.push(", ts_rank(to_tsvector('english', COALESCE(content, '') || ' ' || COALESCE(ocr_text, '')), plainto_tsquery('english', ");
+                    query.push(", ts_rank(to_tsvector('english', COALESCE(documents.content, '') || ' ' || COALESCE(documents.ocr_text, '')), plainto_tsquery('english', ");
                     query.push_bind(search_query);
                     query.push(")) as search_rank");
                 }
                 SearchMode::Phrase => {
-                    query.push(", ts_rank(to_tsvector('english', COALESCE(content, '') || ' ' || COALESCE(ocr_text, '')), phraseto_tsquery('english', ");
+                    query.push(", ts_rank(to_tsvector('english', COALESCE(documents.content, '') || ' ' || COALESCE(documents.ocr_text, '')), phraseto_tsquery('english', ");
                     query.push_bind(search_query);
                     query.push(")) as search_rank");
                 }
                 SearchMode::Boolean => {
-                    query.push(", ts_rank(to_tsvector('english', COALESCE(content, '') || ' ' || COALESCE(ocr_text, '')), to_tsquery('english', ");
+                    query.push(", ts_rank(to_tsvector('english', COALESCE(documents.content, '') || ' ' || COALESCE(documents.ocr_text, '')), to_tsquery('english', ");
                     query.push_bind(search_query);
                     query.push(")) as search_rank");
                 }
                 SearchMode::Fuzzy => {
-                    query.push(", similarity(COALESCE(content, '') || ' ' || COALESCE(ocr_text, ''), ");
+                    query.push(", similarity(COALESCE(documents.content, '') || ' ' || COALESCE(documents.ocr_text, ''), ");
                     query.push_bind(search_query);
                     query.push(") as search_rank");
                 }
@@ -93,38 +122,87 @@ impl Database {
             query.push(", 0.0 as search_rank");
         }
 
-        query.push(" FROM documents WHERE 1=1");
+        query.push(" FROM documents LEFT JOIN document_info ON documents.id = document_info.document_id WHERE 1=1");
 
         apply_role_based_filter(&mut query, user_id, user_role);
 
-        // Add search conditions
+        // Add search conditions for document content
         if !search_query.is_empty() {
             match search_request.search_mode.as_ref().unwrap_or(&SearchMode::Simple) {
                 SearchMode::Simple => {
-                    query.push(" AND (to_tsvector('english', COALESCE(content, '')) @@ plainto_tsquery('english', ");
+                    query.push(" AND (to_tsvector('english', COALESCE(documents.content, '')) @@ plainto_tsquery('english', ");
                     query.push_bind(search_query);
-                    query.push(") OR to_tsvector('english', COALESCE(ocr_text, '')) @@ plainto_tsquery('english', ");
+                    query.push(") OR to_tsvector('english', COALESCE(documents.ocr_text, '')) @@ plainto_tsquery('english', ");
                     query.push_bind(search_query);
-                    query.push("))");
+                    query.push(")");
+                    // Also search in document_info fields
+                    query.push(" OR document_info.document_name ILIKE '%' || ");
+                    query.push_bind(search_query);
+                    query.push(" || '%'");
+                    query.push(" OR document_info.document_number ILIKE '%' || ");
+                    query.push_bind(search_query);
+                    query.push(" || '%'");
+                    query.push(" OR document_info.party_a ILIKE '%' || ");
+                    query.push_bind(search_query);
+                    query.push(" || '%'");
+                    query.push(" OR document_info.party_b ILIKE '%' || ");
+                    query.push_bind(search_query);
+                    query.push(" || '%'");
+                    query.push(" OR document_info.contact_person ILIKE '%' || ");
+                    query.push_bind(search_query);
+                    query.push(" || '%'");
+                    query.push(" OR document_info.contact_phone ILIKE '%' || ");
+                    query.push_bind(search_query);
+                    query.push(" || '%'");
+                    query.push(" OR document_info.service_type ILIKE '%' || ");
+                    query.push_bind(search_query);
+                    query.push(" || '%'");
+                    query.push(" OR document_info.service_location ILIKE '%' || ");
+                    query.push_bind(search_query);
+                    query.push(" || '%'");
+                    query.push(" OR document_info.address ILIKE '%' || ");
+                    query.push_bind(search_query);
+                    query.push(" || '%')");
                 }
                 SearchMode::Phrase => {
-                    query.push(" AND (to_tsvector('english', COALESCE(content, '')) @@ phraseto_tsquery('english', ");
+                    query.push(" AND (to_tsvector('english', COALESCE(documents.content, '')) @@ phraseto_tsquery('english', ");
                     query.push_bind(search_query);
-                    query.push(") OR to_tsvector('english', COALESCE(ocr_text, '')) @@ phraseto_tsquery('english', ");
+                    query.push(") OR to_tsvector('english', COALESCE(documents.ocr_text, '')) @@ phraseto_tsquery('english', ");
                     query.push_bind(search_query);
-                    query.push("))");
+                    query.push(")");
+                    query.push(" OR document_info.document_name ILIKE '%' || ");
+                    query.push_bind(search_query);
+                    query.push(" || '%' OR document_info.party_a ILIKE '%' || ");
+                    query.push_bind(search_query);
+                    query.push(" || '%' OR document_info.party_b ILIKE '%' || ");
+                    query.push_bind(search_query);
+                    query.push(" || '%')");
                 }
                 SearchMode::Boolean => {
-                    query.push(" AND (to_tsvector('english', COALESCE(content, '')) @@ to_tsquery('english', ");
+                    query.push(" AND (to_tsvector('english', COALESCE(documents.content, '')) @@ to_tsquery('english', ");
                     query.push_bind(search_query);
-                    query.push(") OR to_tsvector('english', COALESCE(ocr_text, '')) @@ to_tsquery('english', ");
+                    query.push(") OR to_tsvector('english', COALESCE(documents.ocr_text, '')) @@ to_tsquery('english', ");
                     query.push_bind(search_query);
-                    query.push("))");
+                    query.push(")");
+                    query.push(" OR document_info.document_name ILIKE '%' || ");
+                    query.push_bind(search_query);
+                    query.push(" || '%' OR document_info.party_a ILIKE '%' || ");
+                    query.push_bind(search_query);
+                    query.push(" || '%' OR document_info.party_b ILIKE '%' || ");
+                    query.push_bind(search_query);
+                    query.push(" || '%')");
                 }
                 SearchMode::Fuzzy => {
-                    query.push(" AND similarity(COALESCE(content, '') || ' ' || COALESCE(ocr_text, ''), ");
+                    query.push(" AND (similarity(COALESCE(documents.content, '') || ' ' || COALESCE(documents.ocr_text, ''), ");
                     query.push_bind(search_query);
                     query.push(") > 0.3");
+                    query.push(" OR document_info.document_name ILIKE '%' || ");
+                    query.push_bind(search_query);
+                    query.push(" || '%' OR document_info.party_a ILIKE '%' || ");
+                    query.push_bind(search_query);
+                    query.push(" || '%' OR document_info.party_b ILIKE '%' || ");
+                    query.push_bind(search_query);
+                    query.push(" || '%')");
                 }
             }
         }
@@ -146,13 +224,17 @@ impl Database {
             }
         }
 
-        query.push(" ORDER BY search_rank DESC, created_at DESC");
+        query.push(" ORDER BY search_rank DESC, documents.created_at DESC");
         
         let limit = search_request.limit.unwrap_or(25);
         let offset = search_request.offset.unwrap_or(0);
         apply_pagination(&mut query, limit, offset);
 
+        info!("Executing enhanced search query: {}", query.sql());
+        info!("Search params: search_query='{}', user_id={}, role={}", search_query, user_id, user_role);
+
         let rows = query.build().fetch_all(&self.pool).await?;
+        info!("Query returned {} rows", rows.len());
 
         let mut results = Vec::new();
         for row in rows {
@@ -263,7 +345,7 @@ impl Database {
     pub async fn count_search_documents(&self, user_id: Uuid, user_role: UserRole, search_request: &SearchRequest) -> Result<i64> {
         let search_query = search_request.query.trim();
 
-        let mut query = QueryBuilder::<Postgres>::new("SELECT COUNT(*) FROM documents WHERE 1=1");
+        let mut query = QueryBuilder::<Postgres>::new("SELECT COUNT(*) FROM documents LEFT JOIN document_info ON documents.id = document_info.document_id WHERE 1=1");
 
         apply_role_based_filter(&mut query, user_id, user_role);
 
@@ -271,30 +353,58 @@ impl Database {
         if !search_query.is_empty() {
             match search_request.search_mode.as_ref().unwrap_or(&SearchMode::Simple) {
                 SearchMode::Simple => {
-                    query.push(" AND (to_tsvector('english', COALESCE(content, '')) @@ plainto_tsquery('english', ");
+                    query.push(" AND (to_tsvector('english', COALESCE(documents.content, '')) @@ plainto_tsquery('english', ");
                     query.push_bind(search_query);
-                    query.push(") OR to_tsvector('english', COALESCE(ocr_text, '')) @@ plainto_tsquery('english', ");
+                    query.push(") OR to_tsvector('english', COALESCE(documents.ocr_text, '')) @@ plainto_tsquery('english', ");
                     query.push_bind(search_query);
-                    query.push("))");
+                    query.push(")");
+                    query.push(" OR document_info.document_name ILIKE '%' || ");
+                    query.push_bind(search_query);
+                    query.push(" || '%' OR document_info.party_a ILIKE '%' || ");
+                    query.push_bind(search_query);
+                    query.push(" || '%' OR document_info.party_b ILIKE '%' || ");
+                    query.push_bind(search_query);
+                    query.push(" || '%')");
                 }
                 SearchMode::Phrase => {
-                    query.push(" AND (to_tsvector('english', COALESCE(content, '')) @@ phraseto_tsquery('english', ");
+                    query.push(" AND (to_tsvector('english', COALESCE(documents.content, '')) @@ phraseto_tsquery('english', ");
                     query.push_bind(search_query);
-                    query.push(") OR to_tsvector('english', COALESCE(ocr_text, '')) @@ phraseto_tsquery('english', ");
+                    query.push(") OR to_tsvector('english', COALESCE(documents.ocr_text, '')) @@ phraseto_tsquery('english', ");
                     query.push_bind(search_query);
-                    query.push("))");
+                    query.push(")");
+                    query.push(" OR document_info.document_name ILIKE '%' || ");
+                    query.push_bind(search_query);
+                    query.push(" || '%' OR document_info.party_a ILIKE '%' || ");
+                    query.push_bind(search_query);
+                    query.push(" || '%' OR document_info.party_b ILIKE '%' || ");
+                    query.push_bind(search_query);
+                    query.push(" || '%')");
                 }
                 SearchMode::Boolean => {
-                    query.push(" AND (to_tsvector('english', COALESCE(content, '')) @@ to_tsquery('english', ");
+                    query.push(" AND (to_tsvector('english', COALESCE(documents.content, '')) @@ to_tsquery('english', ");
                     query.push_bind(search_query);
-                    query.push(") OR to_tsvector('english', COALESCE(ocr_text, '')) @@ to_tsquery('english', ");
+                    query.push(") OR to_tsvector('english', COALESCE(documents.ocr_text, '')) @@ to_tsquery('english', ");
                     query.push_bind(search_query);
-                    query.push("))");
+                    query.push(")");
+                    query.push(" OR document_info.document_name ILIKE '%' || ");
+                    query.push_bind(search_query);
+                    query.push(" || '%' OR document_info.party_a ILIKE '%' || ");
+                    query.push_bind(search_query);
+                    query.push(" || '%' OR document_info.party_b ILIKE '%' || ");
+                    query.push_bind(search_query);
+                    query.push(" || '%')");
                 }
                 SearchMode::Fuzzy => {
-                    query.push(" AND similarity(COALESCE(content, '') || ' ' || COALESCE(ocr_text, ''), ");
+                    query.push(" AND (similarity(COALESCE(documents.content, '') || ' ' || COALESCE(documents.ocr_text, ''), ");
                     query.push_bind(search_query);
                     query.push(") > 0.3");
+                    query.push(" OR document_info.document_name ILIKE '%' || ");
+                    query.push_bind(search_query);
+                    query.push(" || '%' OR document_info.party_a ILIKE '%' || ");
+                    query.push_bind(search_query);
+                    query.push(" || '%' OR document_info.party_b ILIKE '%' || ");
+                    query.push_bind(search_query);
+                    query.push(" || '%')");
                 }
             }
         }
@@ -311,13 +421,15 @@ impl Database {
         // Add MIME type filtering
         if let Some(ref mime_types) = search_request.mime_types {
             if !mime_types.is_empty() {
-                query.push(" AND mime_type = ANY(");
+                query.push(" AND documents.mime_type = ANY(");
                 query.push_bind(mime_types);
                 query.push(")");
             }
         }
 
+        info!("Executing count query: {}", query.sql());
         let row: (i64,) = query.build_query_as().fetch_one(&self.pool).await?;
+        info!("Count query returned: {}", row.0);
         Ok(row.0)
     }
 }

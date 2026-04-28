@@ -23,7 +23,7 @@ pub enum DocumentError {
     NotFound,
     Conflict(String),
     PayloadTooLarge(String),
-    InternalServerError(String),
+    Internal(String),
     UploadTimeout(String),
     DatabaseConstraintViolation(String),
     OcrProcessingError(String),
@@ -38,7 +38,7 @@ impl IntoResponse for DocumentError {
             DocumentError::NotFound => (StatusCode::NOT_FOUND, "Document not found".to_string(), "UPLOAD_NOT_FOUND"),
             DocumentError::Conflict(msg) => (StatusCode::CONFLICT, msg, "UPLOAD_CONFLICT"),
             DocumentError::PayloadTooLarge(msg) => (StatusCode::PAYLOAD_TOO_LARGE, msg, "UPLOAD_TOO_LARGE"),
-            DocumentError::InternalServerError(msg) => (StatusCode::INTERNAL_SERVER_ERROR, msg, "UPLOAD_INTERNAL_ERROR"),
+            DocumentError::Internal(msg) => (StatusCode::INTERNAL_SERVER_ERROR, msg, "UPLOAD_INTERNAL_ERROR"),
             DocumentError::UploadTimeout(msg) => (StatusCode::REQUEST_TIMEOUT, msg, "UPLOAD_TIMEOUT"),
             DocumentError::DatabaseConstraintViolation(msg) => (StatusCode::CONFLICT, msg, "UPLOAD_DB_CONSTRAINT"),
             DocumentError::OcrProcessingError(msg) => (StatusCode::UNPROCESSABLE_ENTITY, msg, "UPLOAD_OCR_ERROR"),
@@ -79,6 +79,7 @@ pub async fn upload_document(
     mut multipart: Multipart,
 ) -> Result<Json<DocumentUploadResponse>, DocumentError> {
     let mut uploaded_file = None;
+    let mut document_info_json: String = String::new();
     let mut ocr_language: Option<String> = None;
     let mut ocr_languages: Vec<String> = Vec::new();
     
@@ -111,6 +112,10 @@ pub async fn upload_document(
                     }
                 }
             }
+        } else if name == "document_info" {
+            document_info_json = field.text().await.map_err(|_| 
+                DocumentError::BadRequest("Failed to read document_info".to_string()))?;
+            debug!("Received document_info JSON: {}", document_info_json);
         } else if name == "ocr_languages" || name.starts_with("ocr_languages[") {
             let language = field.text().await.map_err(|_| DocumentError::BadRequest("Failed to read language field".to_string()))?;
             if !language.trim().is_empty() {
@@ -220,6 +225,79 @@ pub async fn upload_document(
     ).await {
         Ok(IngestionResult::Created(document)) => {
             info!("Document uploaded successfully: {}", document.id);
+
+            // ==================== 保存 document_info ====================
+            if !document_info_json.is_empty() && document_info_json != "{}" {
+                let doc_info: serde_json::Value = serde_json::from_str(&document_info_json)
+                    .map_err(|e| {
+                        let error_msg = format!("Invalid document_info JSON: {}", e);
+                        error!("{}", error_msg);
+                        DocumentError::BadRequest(error_msg)
+                    })?;
+
+                let pool = state.db.get_pool();
+
+                // 插入或更新 document_info
+                let sql = r#"INSERT INTO document_info (
+                    document_id, document_name, document_number, party_a, party_b,
+                    contract_amount, currency, is_signed, signing_date, contract_status,
+                    contact_person, contact_phone, service_type, service_location,
+                    start_date, end_date, street, address, cleaning_time,
+                    cleaning_volume, unit_price, settlement_method
+                ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9::date, $10, $11, $12, $13, $14, $15::date, $16::date, $17, $18, $19::time, $20, $21, $22)
+                    ON CONFLICT (document_id) DO UPDATE SET
+                        document_name = EXCLUDED.document_name,
+                        document_number = EXCLUDED.document_number,
+                        party_a = EXCLUDED.party_a,
+                        party_b = EXCLUDED.party_b,
+                        contract_amount = EXCLUDED.contract_amount,
+                        currency = EXCLUDED.currency,
+                        is_signed = EXCLUDED.is_signed,
+                        signing_date = EXCLUDED.signing_date,
+                        contract_status = EXCLUDED.contract_status,
+                        contact_person = EXCLUDED.contact_person,
+                        contact_phone = EXCLUDED.contact_phone,
+                        service_type = EXCLUDED.service_type,
+                        service_location = EXCLUDED.service_location,
+                        start_date = EXCLUDED.start_date,
+                        end_date = EXCLUDED.end_date,
+                        street = EXCLUDED.street,
+                        address = EXCLUDED.address,
+                        cleaning_time = EXCLUDED.cleaning_time,
+                        cleaning_volume = EXCLUDED.cleaning_volume,
+                        unit_price = EXCLUDED.unit_price,
+                        settlement_method = EXCLUDED.settlement_method"#;
+
+                let _result = sqlx::query(sql)
+                .bind(&document.id)
+                .bind(doc_info.get("documentName").and_then(|v| v.as_str()))
+                .bind(doc_info.get("documentNumber").and_then(|v| v.as_str()))
+                .bind(doc_info.get("partyA").and_then(|v| v.as_str()))
+                .bind(doc_info.get("partyB").and_then(|v| v.as_str()))
+                .bind(doc_info.get("contractAmount").and_then(|v| v.as_str()).and_then(|s| s.parse::<f64>().ok()))
+                .bind(doc_info.get("currency").and_then(|v| v.as_str()).unwrap_or("CNY"))
+                .bind(doc_info.get("isSigned").and_then(|v| v.as_str()).map(|s| s == "true"))
+                .bind(doc_info.get("signingDate").and_then(|v| v.as_str()))
+                .bind(doc_info.get("contractStatus").and_then(|v| v.as_str()))
+                .bind(doc_info.get("contactPerson").and_then(|v| v.as_str()))
+                .bind(doc_info.get("contactPhone").and_then(|v| v.as_str()))
+                .bind(doc_info.get("serviceType").and_then(|v| v.as_str()))
+                .bind(doc_info.get("serviceLocation").and_then(|v| v.as_str()))
+                .bind(doc_info.get("startDate").and_then(|v| v.as_str()))
+                .bind(doc_info.get("endDate").and_then(|v| v.as_str()))
+                .bind(doc_info.get("street").and_then(|v| v.as_str()))
+                .bind(doc_info.get("address").and_then(|v| v.as_str()))
+                .bind(doc_info.get("cleaningTime").and_then(|v| v.as_str()))
+                .bind(doc_info.get("cleaningVolume").and_then(|v| v.as_str()).and_then(|s| s.parse::<f64>().ok()))
+                .bind(doc_info.get("unitPrice").and_then(|v| v.as_str()).and_then(|s| s.parse::<f64>().ok()))
+                .bind(doc_info.get("settlementMethod").and_then(|v| v.as_str()))
+
+                .execute(pool)
+                .await
+                .map_err(|e| DocumentError::Internal(format!("Failed to save document_info: {}", e)))?;
+
+                info!("Document info saved for document: {}", document.id);
+            }
             
             // Update user's OCR language settings based on what was provided
             if !ocr_languages.is_empty() {
@@ -307,7 +385,7 @@ pub async fn upload_document(
                 return Err(DocumentError::FileProcessingError(format!("File processing error: {}", e)));
             }
             
-            Err(DocumentError::InternalServerError(error_msg))
+            Err(DocumentError::Internal(error_msg))
         }
     }
 }

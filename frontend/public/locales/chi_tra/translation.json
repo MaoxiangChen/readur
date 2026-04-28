@@ -1,0 +1,565 @@
+{
+  "common": {
+    "appName": "DMS",
+    "appTagline": "AI 文件管理平台",
+    "welcome": "歡迎使用 {{appName}}",
+    "welcomeBack": "歡迎回來，{{username}}！👋",
+    "or": "或",
+    "copyright": "© 2026 DMS。由先進的 OCR 與 AI 技術提供支援。",
+    "actions": {
+      "save": "儲存",
+      "cancel": "取消",
+      "close": "關閉",
+      "delete": "刪除",
+      "edit": "編輯",
+      "view": "檢視",
+      "download": "下載",
+      "upload": "上傳",
+      "search": "搜尋",
+      "filter": "篩選",
+      "sort": "排序",
+      "clear": "清除",
+      "refresh": "重新整理",
+      "retry": "重試",
+      "create": "建立",
+      "update": "更新",
+      "viewDetails": "檢視詳細資訊",
+      "back": "返回"
+    },
+    "status": {
+      "loading": "載入中...",
+      "processing": "處理中...",
+      "completed": "已完成",
+      "failed": "失敗",
+      "pending": "待處理",
+      "success": "成功",
+      "error": "錯誤"
+    },
+    "time": {
+      "seconds": "{{count}} 秒",
+      "minutes": "{{count}} 分鐘",
+      "hours": "{{count}} 小時",
+      "days": "{{count}} 天"
+    },
+    "sizes": {
+      "bytes": "{{count}} 位元組",
+      "kb": "{{count}} KB",
+      "mb": "{{count}} MB",
+      "gb": "{{count}} GB"
+    },
+    "moreCount": "另有 {{count}} 項",
+    "of": "的",
+    "and": "和"
+  },
+  "auth": {
+    "signIn": "登入",
+    "signingIn": "登入中...",
+    "signInToAccount": "登入你的帳戶",
+    "signInWithOIDC": "透過 OIDC 登入",
+    "redirecting": "重新導向中...",
+    "username": "使用者名稱",
+    "password": "密碼",
+    "usernameRequired": "使用者名稱為必填",
+    "passwordRequired": "密碼為必填",
+    "logout": "登出",
+    "profile": "個人檔案",
+    "intelligentDocumentPlatform": "你的智慧型文件管理平台",
+    "errors": {
+      "invalidCredentials": "使用者名稱或密碼無效。請確認你的帳號資訊後重試。",
+      "accountDisabled": "你的帳戶已被停用。請聯繫管理員尋求協助。",
+      "userNotFound": "未找到此使用者名稱的帳戶。請確認使用者名稱或聯繫客服。",
+      "sessionExpired": "你的工作階段已過期。請重新登入。",
+      "networkError": "網路錯誤。請確認網路連線後重試。",
+      "serverError": "伺服器錯誤。請稍後再試，若問題持續請聯繫客服。",
+      "oidcAuthFailed": "OIDC 驗證失敗。請與管理員確認。",
+      "oidcNotConfigured": "此伺服器未設定 OIDC。請使用使用者名稱/密碼登入。",
+      "oidcInitFailed": "啟動 OIDC 登入失敗。請重試。",
+      "loginFailed": "登入失敗。請確認你的帳號資訊。"
+    }
+  },
+  "navigation": {
+    "dashboard": "儀表板",
+    "upload": "上傳",
+    "documents": "檔案",
+    "search": "搜尋",
+    "labels": "標籤",
+    "sources": "來源",
+    "watchFolder": "監控資料夾",
+    "documentManagement": "檔案管理",
+    "ignoredFiles": "忽略的檔案"
+  },
+  "dashboard": {
+    "greeting": "以下是你今日的檔案處理狀況。",
+    "stats": {
+      "totalDocuments": {
+        "title": "總檔案數",
+        "subtitle": "你的圖書館中的檔案",
+        "trend": "總計 {{count}} 件",
+        "trendEmpty": "尚未有任何檔案"
+      },
+      "storageUsed": {
+        "title": "已使用儲存空間",
+        "subtitle": "檔案總大小",
+        "trend": "已使用 {{size}}",
+        "trendEmpty": "尚未使用任何儲存空間"
+      },
+      "ocrProcessed": {
+        "title": "OCR 處理完成",
+        "subtitle": "已萃取文字的檔案",
+        "trend": "完成度 {{percentage}}%",
+        "trendEmpty": "完成度 0%"
+      },
+      "searchable": {
+        "title": "可搜尋",
+        "subtitle": "已準備好進行搜尋",
+        "trend": "已建立索引 {{count}} 件",
+        "trendEmpty": "尚未建立任何索引"
+      }
+    },
+    "recentDocuments": {
+      "title": "最近的檔案",
+      "viewAll": "檢視全部",
+      "noDocuments": "尚未有任何檔案",
+      "uploadFirst": "請上傳你的第一個檔案開始使用"
+    },
+    "quickActions": {
+      "title": "快速操作",
+      "upload": {
+        "title": "上傳檔案",
+        "description": "新增檔案進行 OCR 處理"
+      },
+      "search": {
+        "title": "搜尋圖書館",
+        "description": "依內容或中繼資料尋找檔案"
+      },
+      "browse": {
+        "title": "瀏覽檔案",
+        "description": "檢視並管理你的檔案圖書館"
+      }
+    }
+  },
+  "search": {
+    "title": "搜尋檔案",
+    "placeholder": "依內容、檔名或標籤搜尋檔案... 試試「發票」、「合約」或 tag:重要",
+    "searchPlaceholder": "搜尋檔案...",
+    "noResults": {
+      "title": "未找到「{{query}}」的結果",
+      "subtitle": "請嘗試調整搜尋字詞或篩選條件",
+      "suggestions": {
+        "title": "建議：",
+        "simpler": "嘗試更簡單或通用的字詞",
+        "spelling": "檢查拼字並嘗試不同的關鍵字",
+        "removeFilters": "移除部分篩選條件以擴大搜尋範圍",
+        "useQuotes": "使用引號搜尋完全相符的片語"
+      }
+    },
+    "searching": "搜尋中...",
+    "searchingAsYouType": "隨輸入即時搜尋...",
+    "quickResults": "快速結果",
+    "resultsCount": "找到 {{count}} 筆",
+    "viewAllResults": "檢視「{{query}}」的所有結果",
+    "recentSearches": "最近的搜尋",
+    "startTyping": "開始輸入以搜尋檔案",
+    "popularSearches": "熱門搜尋：",
+    "noDocumentsFound": "未找到「{{query}}」相關檔案",
+    "pressEnterAdvanced": "按 Enter 鍵使用進階選項搜尋",
+    "trySuggestions": "試試這些建議：",
+    "settings": {
+      "title": "搜尋設定"
+    },
+    "modes": {
+      "smart": "智慧型",
+      "exactPhrase": "完全相符片語",
+      "similarWords": "相似字詞",
+      "advanced": "進階",
+      "enhanced": "增強型"
+    },
+    "quickSuggestions": {
+      "title": "快速建議："
+    },
+    "relatedSearches": {
+      "title": "相關搜尋："
+    },
+    "filters": {
+      "title": "篩選條件",
+      "tags": "標籤",
+      "selectTags": "選擇標籤",
+      "ocrStatus": "OCR 狀態",
+      "ocrText": "OCR 文字",
+      "allDocuments": "所有檔案",
+      "hasOcrText": "有 OCR 文字",
+      "noOcrText": "無 OCR 文字",
+      "dateRange": "日期範圍",
+      "daysAgo": "幾天前：{{min}} - {{max}}",
+      "dateMarks": {
+        "today": "今日",
+        "30d": "30 天",
+        "90d": "90 天",
+        "1y": "1 年"
+      },
+      "fileSize": "檔案大小",
+      "sizeRange": "大小：{{min}}MB - {{max}}MB"
+    },
+    "status": {
+      "searching": "搜尋中...",
+      "resultsFound": "找到 {{count}} 筆結果"
+    },
+    "display": {
+      "settings": "顯示設定",
+      "textSettings": "文字顯示設定",
+      "fontSizeLabel": "字型大小：{{size}}px",
+      "snippetsPerResult": "每筆結果顯示摘要數：{{count}}",
+      "contextLength": "上下文長度：{{length}} 字元",
+      "viewMode": {
+        "label": "檢視模式",
+        "compact": "精簡模式",
+        "detailed": "詳細模式",
+        "contextFocus": "上下文焦點"
+      },
+      "highlightStyle": {
+        "label": "反白樣式",
+        "background": "背景色",
+        "underline": "底線",
+        "bold": "粗體文字"
+      }
+    },
+    "results": {
+      "showing": "顯示：",
+      "snippetsCount": "{{count}} 個摘要",
+      "fontSize": "{{size}}px 字型",
+      "hasOcr": " • OCR",
+      "tags": "標籤：",
+      "pagination": "顯示第 {{start}}-{{end}} 筆，共 {{total}} 筆結果"
+    },
+    "empty": {
+      "title": "開始搜尋你的檔案",
+      "subtitle": "使用上方的增強型搜尋列，依內容、檔名或標籤尋找檔案"
+    },
+    "tips": {
+      "title": "搜尋技巧：",
+      "exactPhrase": "使用引號搜尋完全相符的片語：「專案計畫」",
+      "tags": "依標籤搜尋：tag:重要 或 tag:發票",
+      "combine": "合併字詞：合約 AND 付款",
+      "wildcards": "使用萬用字元：proj* 可搜尋 project、projects 等"
+    },
+    "examples": {
+      "invoice": "試試：發票",
+      "contract": "試試：合約",
+      "tagImportant": "試試：tag:重要"
+    },
+    "actions": {
+      "clearFilters": "清除篩選條件",
+      "newSearch": "新搜尋"
+    }
+  },
+  "upload": {
+    "title": "上傳檔案",
+    "subtitle": "透過智慧型 OCR 處理轉換你的檔案",
+    "features": {
+      "aiOcr": {
+        "title": "AI 驅動 OCR",
+        "description": "從任何檔案類型中進階萃取文字"
+      },
+      "fullTextSearch": {
+        "title": "全文搜尋",
+        "description": "依內容或中繼資料立即尋找檔案"
+      },
+      "lightningFast": {
+        "title": "極速處理",
+        "description": "數秒內完成檔案處理，無需數分鐘等待"
+      },
+      "secure": {
+        "title": "安全且私密",
+        "description": "你的檔案均經加密保護"
+      },
+      "multiLanguage": {
+        "title": "多語系支援",
+        "description": "支援超過 100 種語言與文字系統"
+      }
+    },
+    "tips": {
+      "title": "📋 上傳技巧",
+      "highRes": "• 為獲得最佳 OCR 結果，請使用高解析度影像",
+      "pdfText": "• 含文字層的 PDF 檔案處理速度更快",
+      "clarity": "• 確保檔案光源充足且清晰可讀",
+      "maxSize": "• 每個檔案的最大大小限制為 50MB"
+    },
+    "dropzone": {
+      "dragDrop": "將檔案拖曳至此",
+      "dropHere": "將檔案置於此處",
+      "browse": "或點選瀏覽你的電腦",
+      "chooseFiles": "選擇檔案",
+      "maxFileSize": "最大檔案大小：每個檔案 50MB",
+      "fileTypes": {
+        "pdf": "PDF",
+        "images": "影像",
+        "text": "文字",
+        "word": "Word"
+      }
+    },
+    "languageSettings": {
+      "title": "🌐 OCR 語言設定",
+      "description": "選擇語言以最佳化 OCR 文字辨識效果"
+    },
+    "documentInfo": {
+      "title": "📋 文檔資訊",
+      "description": "文檔相关資訊（带*为必填）"
+    },
+    "labelAssignment": {
+      "title": "📋 標籤指派",
+      "description": "選擇要自動指派給所有上傳檔案的標籤",
+      "placeholder": "為你的檔案選擇標籤...",
+      "helperText": "這些標籤將套用至所有上傳的檔案"
+    },
+    "fileList": {
+      "title": "檔案 ({{count}})",
+      "clearCompleted": "清除已完成項目",
+      "uploading": "上傳中... ({{completed}}/{{total}})",
+      "uploadingSimple": "上傳中...",
+      "uploadAll": "全部上傳"
+    },
+    "errors": {
+      "sessionExpired": "你的工作階段已過期。請重新整理頁面並重新登入。",
+      "labelPermissionDenied": "你無權存取標籤。",
+      "labelNetworkError": "載入標籤時發生網路錯誤。請確認你的網路連線。",
+      "fileTooLarge": "檔案過大。最大大小限制為 50MB。",
+      "unsupportedFormat": "不支援的檔案格式。請使用 PDF、影像、文字或 Word 文件。",
+      "processingFailed": "處理檔案失敗。請重試或聯繫客服。",
+      "permissionDenied": "你無權上傳檔案。",
+      "networkError": "網路錯誤。請確認網路連線後重試。",
+      "serverError": "伺服器錯誤。請稍後再試。"
+    }
+  },
+  "documents": {
+    "title": "檔案",
+    "subtitle": "管理並瀏覽你的檔案圖書館",
+    "viewDocument": "檢視檔案",
+    "downloadDocument": "下載檔案",
+    "deleteDocument": "刪除檔案",
+    "unknownDocument": "未知檔案",
+    "search": {
+      "placeholder": "搜尋檔案..."
+    },
+    "selection": {
+      "select": "選擇",
+      "cancel": "取消",
+      "count": "已選擇 {{count}} / {{total}} 個檔案",
+      "selectAll": "全選",
+      "deselectAll": "取消全選",
+      "deleteSelected": "刪除已選項目 ({{count}})"
+    },
+    "filters": {
+      "ocrStatus": "OCR 狀態",
+      "all": "全部",
+      "completed": "已完成",
+      "processing": "處理中",
+      "failed": "失敗",
+      "pending": "待處理"
+    },
+    "sort": {
+      "label": "排序",
+      "newestFirst": "最新優先",
+      "oldestFirst": "最舊優先",
+      "nameAZ": "名稱 A-Z",
+      "nameZA": "名稱 Z-A",
+      "largestFirst": "最大優先",
+      "smallestFirst": "最小優先"
+    },
+    "ocrStatus": {
+      "confidence": "OCR 信心度 {{percent}}%",
+      "done": "OCR 完成",
+      "processing": "處理中...",
+      "failed": "OCR 失敗",
+      "pending": "已排入佇列"
+    },
+    "actions": {
+      "editLabels": "編輯標籤",
+      "retryOcr": "重試 OCR",
+      "retryingOcr": "重試 OCR 中...",
+      "retryHistory": "重試記錄"
+    },
+    "empty": {
+      "title": "未找到檔案",
+      "searchSubtitle": "請嘗試調整你的搜尋字詞",
+      "uploadSubtitle": "請上傳你的第一個檔案開始使用"
+    },
+    "dialogs": {
+      "editLabels": {
+        "title": "編輯檔案標籤",
+        "placeholder": "為此檔案選擇標籤..."
+      },
+      "delete": {
+        "title": "刪除檔案",
+        "message": "你確定要刪除「{{filename}}」嗎？",
+        "warning": "此操作無法復原。檔案與所有相關資料將被永久刪除。",
+        "deleting": "刪除中...",
+        "delete": "刪除"
+      },
+      "bulkDelete": {
+        "title": "刪除多個檔案",
+        "message": "你確定要刪除 {{count}} 個已選檔案{{plural}}嗎？",
+        "warning": "此操作無法復原。所有已選檔案及其相關資料將被永久刪除。",
+        "listTitle": "即將刪除的檔案：",
+        "moreCount": "... 以及其他 {{count}} 個",
+        "deleteButton": "刪除 {{count}} 個檔案{{plural}}"
+      }
+    },
+    "pagination": {
+      "showing": "顯示第 {{start}}-{{end}} 筆，共 {{total}} 個檔案",
+      "withOcrStatus": " ，OCR 狀態：{{status}}",
+      "matching": " ，符合「{{query}}」"
+    }
+  },
+  "documentDetails": {
+    "subtitle": "全方位的檔案分析與中繼資料檢視器",
+    "tabs": {
+      "preview": "預覽",
+      "ocrText": "OCR 文字",
+      "details": "詳細資訊",
+      "activity": "活動記錄"
+    },
+    "actions": {
+      "backToDocuments": "返回檔案列表",
+      "download": "下載",
+      "viewDocument": "檢視檔案",
+      "viewOcrText": "檢視 OCR 文字",
+      "viewProcessedImage": "檢視處理後影像",
+      "retryOcr": "重試 OCR",
+      "retryHistory": "重試記錄",
+      "editLabels": "編輯標籤",
+      "deleteDocument": "刪除檔案"
+    },
+    "errors": {
+      "notFound": "找不到檔案"
+    },
+    "metadata": {
+      "fileSize": "檔案大小",
+      "uploadDate": "上傳日期",
+      "sourceType": "來源類型",
+      "originalPath": "原始路徑",
+      "originalCreated": "原始建立時間",
+      "originalModified": "原始修改時間",
+      "ocrStatus": "OCR 狀態",
+      "textExtracted": "已萃取文字"
+    },
+    "ocr": {
+      "title": "萃取文字 (OCR)",
+      "expandTooltip": "展開以檢視含搜尋功能的完整文字",
+      "expand": "展開",
+      "loading": "載入 OCR 分析中...",
+      "confidence": "信心度",
+      "words": "字數",
+      "processingTime": "處理時間",
+      "error": "OCR 處理錯誤",
+      "noText": "此檔案無可用的 OCR 文字。",
+      "completed": "處理完成時間：{{date}}",
+      "loadFailed": "OCR 文字已存在但載入失敗。請嘗試重新整理頁面。"
+    },
+    "tagsLabels": {
+      "title": "標籤與分類",
+      "tags": "標籤",
+      "labels": "分類",
+      "noLabels": "此檔案尚未指派任何分類"
+    },
+    "dialogs": {
+      "ocrText": {
+        "title": "萃取文字 (OCR)",
+        "confidence": "信心度 {{percent}}%",
+        "words": "{{count}} 個字",
+        "loading": "載入 OCR 文字中...",
+        "error": "OCR 錯誤：{{message}}",
+        "noText": "此檔案無可用的 OCR 文字。",
+        "processingTime": "處理時間：{{time}}ms",
+        "completed": "完成時間：{{date}}"
+      },
+      "ocrExpanded": {
+        "title": "萃取文字 (OCR) - 完整檢視",
+        "searchPlaceholder": "在萃取文字中搜尋...",
+        "matches": "找到 {{count}} 個相符{{plural}}",
+        "noMatches": "未找到相符項目",
+        "loading": "載入 OCR 文字中...",
+        "error": "OCR 錯誤：{{message}}",
+        "noText": "此檔案無可用的 OCR 文字。"
+      },
+      "processedImage": {
+        "title": "處理後影像 - 已套用 OCR 增強效果",
+        "description": "這是 OCR 引擎實際處理的增強版影像。你可在設定頁面調整 OCR 增強設定。",
+        "noImage": "無可用的處理後影像"
+      },
+      "editLabels": {
+        "title": "編輯檔案分類",
+        "description": "選擇要指派給此檔案的分類",
+        "placeholder": "為此檔案選擇分類...",
+        "saveLabels": "儲存分類"
+      },
+      "delete": {
+        "title": "刪除檔案",
+        "warning": "此操作無法復原。",
+        "message": "你確定要刪除 <strong>{{filename}}</strong> 嗎？",
+        "details": "這將永久移除檔案及所有相關資料，包括 OCR 文字、分類與處理記錄。",
+        "deleting": "刪除中...",
+        "delete": "刪除檔案"
+      }
+    }
+  },
+  "ignoredFiles": {
+    "title": "忽略的檔案",
+    "subtitle": "檢視並管理處理期間刻意忽略的檔案",
+    "filters": {
+      "searchPlaceholder": "依檔名或路徑搜尋...",
+      "reason": "原因",
+      "allReasons": "所有原因",
+      "duplicateHash": "重複雜湊值",
+      "tooLarge": "過大",
+      "unsupportedFormat": "不支援的格式",
+      "excluded": "已排除",
+      "permissionDenied": "權限拒絕",
+      "corrupted": "已損毀",
+      "other": "其他"
+    },
+    "table": {
+      "filename": "檔名",
+      "path": "路徑",
+      "reason": "原因",
+      "size": "大小",
+      "ignoredAt": "忽略時間"
+    },
+    "empty": {
+      "title": "無忽略的檔案",
+      "subtitle": "沒有任何檔案被忽略。所有處理的檔案均已成功處理。"
+    },
+    "noResults": {
+      "title": "未找到結果",
+      "subtitle": "沒有任何忽略的檔案符合你目前的篩選條件。請嘗試調整搜尋或篩選條件。"
+    },
+    "pagination": {
+      "showing": "顯示第 {{start}}-{{end}} 筆，共 {{total}} 個忽略的檔案"
+    },
+    "errors": {
+      "loadFailed": "載入忽略的檔案失敗",
+      "tryAgain": "請稍後再試"
+    },
+    "reasons": {
+      "duplicate_hash": "重複雜湊值 - 系統中已存在此檔案",
+      "file_too_large": "檔案過大 - 超過最大大小限制",
+      "unsupported_format": "不支援的格式 - 檔案類型不受支援",
+      "excluded_by_pattern": "已排除 - 檔案符合排除模式",
+      "permission_denied": "權限拒絕 - 無法存取檔案",
+      "file_corrupted": "檔案已損毀 - 無法讀取或處理檔案",
+      "unknown": "未知 - 未指定原因"
+    }
+  },
+  "documentManagement": {
+    "title": "檔案管理",
+    "retryAll": "重試所有檔案",
+    "retrying": "重試所有中...",
+    "retryFailedOnly": "僅重試失敗項目",
+    "tabs": {
+      "failedDocuments": "失敗的檔案",
+      "failedDocumentsTooltip": "檢視並管理處理期間失敗的檔案（OCR、擷取、驗證等）",
+      "cleanup": "檔案清理",
+      "cleanupTooltip": "管理並清理有品質問題的檔案 - OCR 信心度低或處理失敗",
+      "duplicates": "重複檔案"
+    }
+  }
+}

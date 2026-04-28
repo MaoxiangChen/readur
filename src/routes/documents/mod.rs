@@ -1,4 +1,4 @@
-use axum::{routing::{get, post, delete}, Router};
+use axum::{routing::{get, post, delete, put}, Router};
 use std::sync::Arc;
 use crate::AppState;
 
@@ -8,6 +8,7 @@ pub mod ocr;
 pub mod bulk;
 pub mod debug;
 pub mod failed;
+pub mod info;
 
 // Re-export commonly used types and functions for backward compatibility
 pub use types::*;
@@ -16,6 +17,7 @@ pub use ocr::*;
 pub use bulk::*;
 pub use debug::*;
 pub use failed::*;
+pub use info::{get_document_info, update_document_info, delete_document_info};
 
 pub fn router() -> Router<Arc<AppState>> {
     Router::new()
@@ -26,6 +28,11 @@ pub fn router() -> Router<Arc<AppState>> {
         .route("/{id}", delete(delete_document))
         .route("/{id}/download", get(download_document))
         .route("/{id}/view", get(view_document))
+        
+        // Info operations
+        .route("/{id}/info", get(get_document_info))
+        .route("/{id}/info", put(update_document_info))
+        .route("/{id}/info", delete(delete_document_info))
         
         // OCR operations
         .route("/{id}/ocr", get(get_document_ocr))
