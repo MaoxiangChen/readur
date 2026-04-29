@@ -5,7 +5,7 @@
     "welcome": "Willkommen bei {{appName}}",
     "welcomeBack": "Willkommen zurück, {{username}}! 👋",
     "or": "oder",
-    "copyright": "© 2026 DMS. Unterstützt durch fortschrittliche OCR- und KI-Technologie.",
+    "copyright": "© 2026 readur. Unterstützt durch fortschrittliche OCR- und KI-Technologie.",
     "actions": {
       "save": "Speichern",
       "cancel": "Abbrechen",

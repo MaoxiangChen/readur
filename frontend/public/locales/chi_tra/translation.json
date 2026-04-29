@@ -5,7 +5,7 @@
     "welcome": "歡迎使用 {{appName}}",
     "welcomeBack": "歡迎回來，{{username}}！👋",
     "or": "或",
-    "copyright": "© 2026 DMS。由先進的 OCR 與 AI 技術提供支援。",
+    "copyright": "© 2026 readur。由先進的 OCR 與 AI 技術提供支援。",
     "actions": {
       "save": "儲存",
       "cancel": "取消",

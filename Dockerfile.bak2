@@ -1,0 +1,21 @@
+FROM debian:bookworm-slim
+
+WORKDIR /app
+
+# 仅安装运行时依赖（极小！秒拉！）
+RUN apt-get update && apt-get install -y \
+    tesseract-ocr tesseract-ocr-all poppler-utils \
+    python3 python3-pip ghostscript \
+    && pip3 install --no-cache-dir ocrmypdf \
+    && rm -rf /var/lib/apt/lists/*
+
+# 复制你本地已经编译好的前后端
+COPY target/release/readur .
+COPY frontend/dist ./frontend/dist
+COPY migrations ./migrations
+
+RUN mkdir -p uploads watch
+
+EXPOSE 8000
+
+CMD ["./readur"]
