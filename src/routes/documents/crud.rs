@@ -268,35 +268,44 @@ pub async fn upload_document(
                         unit_price = EXCLUDED.unit_price,
                         settlement_method = EXCLUDED.settlement_method"#;
 
-                let _result = sqlx::query(sql)
-                .bind(&document.id)
-                .bind(doc_info.get("documentName").and_then(|v| v.as_str()))
-                .bind(doc_info.get("documentNumber").and_then(|v| v.as_str()))
-                .bind(doc_info.get("partyA").and_then(|v| v.as_str()))
-                .bind(doc_info.get("partyB").and_then(|v| v.as_str()))
-                .bind(doc_info.get("contractAmount").and_then(|v| v.as_str()).and_then(|s| s.parse::<f64>().ok()))
-                .bind(doc_info.get("currency").and_then(|v| v.as_str()).unwrap_or("CNY"))
-                .bind(doc_info.get("isSigned").and_then(|v| v.as_str()).map(|s| s == "true"))
-                .bind(doc_info.get("signingDate").and_then(|v| v.as_str()))
-                .bind(doc_info.get("contractStatus").and_then(|v| v.as_str()))
-                .bind(doc_info.get("contactPerson").and_then(|v| v.as_str()))
-                .bind(doc_info.get("contactPhone").and_then(|v| v.as_str()))
-                .bind(doc_info.get("serviceType").and_then(|v| v.as_str()))
-                .bind(doc_info.get("serviceLocation").and_then(|v| v.as_str()))
-                .bind(doc_info.get("startDate").and_then(|v| v.as_str()))
-                .bind(doc_info.get("endDate").and_then(|v| v.as_str()))
-                .bind(doc_info.get("street").and_then(|v| v.as_str()))
-                .bind(doc_info.get("address").and_then(|v| v.as_str()))
-                .bind(doc_info.get("cleaningTime").and_then(|v| v.as_str()))
-                .bind(doc_info.get("cleaningVolume").and_then(|v| v.as_str()).and_then(|s| s.parse::<f64>().ok()))
-                .bind(doc_info.get("unitPrice").and_then(|v| v.as_str()).and_then(|s| s.parse::<f64>().ok()))
-                .bind(doc_info.get("settlementMethod").and_then(|v| v.as_str()))
+                // 执行 SQL
+                let execute_result = sqlx::query(sql)
+                    .bind(&document.id)
+                    .bind(doc_info.get("documentName").and_then(|v| v.as_str()))
+                    .bind(doc_info.get("documentNumber").and_then(|v| v.as_str()))
+                    .bind(doc_info.get("partyA").and_then(|v| v.as_str()))
+                    .bind(doc_info.get("partyB").and_then(|v| v.as_str()))
+                    .bind(doc_info.get("contractAmount").and_then(|v| v.as_str()).and_then(|s| s.parse::<f64>().ok()))
+                    .bind(doc_info.get("currency").and_then(|v| v.as_str()).unwrap_or("CNY"))
+                    .bind(doc_info.get("isSigned").and_then(|v| v.as_str()).map(|s| s == "true"))
+                    .bind(doc_info.get("signingDate").and_then(|v| v.as_str()))
+                    .bind(doc_info.get("contractStatus").and_then(|v| v.as_str()))
+                    .bind(doc_info.get("contactPerson").and_then(|v| v.as_str()))
+                    .bind(doc_info.get("contactPhone").and_then(|v| v.as_str()))
+                    .bind(doc_info.get("serviceType").and_then(|v| v.as_str()))
+                    .bind(doc_info.get("serviceLocation").and_then(|v| v.as_str()))
+                    .bind(doc_info.get("startDate").and_then(|v| v.as_str()))
+                    .bind(doc_info.get("endDate").and_then(|v| v.as_str()))
+                    .bind(doc_info.get("street").and_then(|v| v.as_str()))
+                    .bind(doc_info.get("address").and_then(|v| v.as_str()))
+                    .bind(doc_info.get("cleaningTime").and_then(|v| v.as_str()))
+                    .bind(doc_info.get("cleaningVolume").and_then(|v| v.as_str()).and_then(|s| s.parse::<f64>().ok()))
+                    .bind(doc_info.get("unitPrice").and_then(|v| v.as_str()).and_then(|s| s.parse::<f64>().ok()))
+                    .bind(doc_info.get("settlementMethod").and_then(|v| v.as_str()))
+                    .execute(pool)
+                    .await;
 
-                .execute(pool)
-                .await
-                .map_err(|e| DocumentError::Internal(format!("Failed to save document_info: {}", e)))?;
-
-                info!("Document info saved for document: {}", document.id);
+                // 处理结果：成功/失败 都打日志
+                match execute_result {
+                    Ok(_result) => {
+                        info!("Document info saved for document: {}", document.id);
+                    }
+                    Err(e) => {
+                        // 🔥 这里就是你要的：插入失败日志
+                        error!("Failed to save document_info for document {}: {}", document.id, e);
+                        return Err(DocumentError::Internal(format!("Failed to save document_info: {}", e)));
+                    }
+                }
             }
             
             // Update user's OCR language settings based on what was provided

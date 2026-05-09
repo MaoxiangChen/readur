@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS document_info (
     end_date DATE,
     street VARCHAR(255),
     address VARCHAR(500),
-    cleaning_time DATE,
+    cleaning_time TIME,
     cleaning_volume DECIMAL(18,2),
     unit_price DECIMAL(18,4),
     settlement_method VARCHAR(50),
